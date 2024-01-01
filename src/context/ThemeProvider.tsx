@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+import { DB } from "@/lib/db";
+
 type Theme = "dark" | "light" | "system";
 
 type ThemeProviderProps = {
@@ -23,7 +25,7 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  storageKey = "proompt-ui-theme",
+  storageKey = DB.KEYS.THEME,
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(

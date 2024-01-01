@@ -62,6 +62,8 @@ export function withFormContext<ComponentPropTypes>(
         control={control}
         defaultValue={defaultValue}
         render={(props) => {
+          console.log(props);
+
           const getClearFieldMethod = () => {
             if (!isClearable) return {};
             if (!props.field.value) return {};
@@ -75,6 +77,7 @@ export function withFormContext<ComponentPropTypes>(
           };
 
           const inputProps = {
+            placeholder: typeof label === "string" ? label : undefined,
             ...props.field,
             id,
             error: props.fieldState.error,

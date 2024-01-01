@@ -1,5 +1,5 @@
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type FormProps<T extends z.ZodSchema> = {

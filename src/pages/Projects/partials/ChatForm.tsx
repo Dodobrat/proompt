@@ -1,5 +1,5 @@
 import { Filter, SendHorizonal } from "lucide-react";
-import * as z from "zod";
+import { z } from "zod";
 
 import { Form, FormInput } from "@/components/form";
 import { Button } from "@/components/ui";
@@ -22,18 +22,18 @@ export function ChatForm({ children }: { children?: React.ReactNode }) {
       onSubmit={onSubmit}
       schema={chatSchema}
       defaultValues={defaultChatValues}
-      className="grid gap-4 content-end min-h-full"
+      className="grid min-h-full content-end gap-4"
     >
       {children}
-      <div className="grid sm:grid-cols-[1fr_auto] gap-2 pb-4 items-start">
+      <div className="sticky bottom-0 grid items-start gap-2 pb-4 sm:grid-cols-[1fr_auto]">
         <FormInput.Textarea
           name="prompt"
           label=""
           placeholder="Your manual prompt here"
           hint="Type your manual prompt here or add filters and other nice things from the side"
-          className="resize-none h-24"
+          className="h-24 resize-none"
         />
-        <div className="col-auto grid py-2 gap-2">
+        <div className="col-auto grid gap-2 py-2">
           <Button type="submit">
             <span className="sm:hidden">Submit</span>
             <SendHorizonal className="ml-2" />
