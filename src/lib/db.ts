@@ -84,12 +84,12 @@ function safeCreate({
 
 function deleteEntry({
   key,
-  locatorFn,
+  matcherFn,
   onError,
   onSuccess,
 }: {
   key: string;
-  locatorFn: (item: any, index: number) => boolean;
+  matcherFn: (item: any, index: number) => boolean;
 } & DBFeedback) {
   const storedData = get({ key });
 
@@ -97,18 +97,18 @@ function deleteEntry({
     return onError?.();
   }
 
-  set({ key, data: storedData.filter(locatorFn), onSuccess, onError });
+  set({ key, data: storedData.filter(matcherFn), onSuccess, onError });
 }
 
 function update({
   key,
-  locatorFn,
+  matcherFn,
   data,
   onError,
   onSuccess,
 }: {
   key: string;
-  locatorFn: (item: any, index: number) => boolean;
+  matcherFn: (item: any, index: number) => boolean;
   data: any;
 } & DBFeedback) {
   const storedData = get({ key });
@@ -120,7 +120,7 @@ function update({
   set({
     key,
     data: (storedData as any[]).map((item, index) => {
-      if (locatorFn(item, index)) {
+      if (matcherFn(item, index)) {
         return { ...item, ...data };
       }
       return item;

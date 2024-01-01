@@ -1,0 +1,103 @@
+{
+  "data": [
+    {
+      "name": "Kelly Wearstler",
+      "description": "Vibrant, sophisticated interiors"
+    },
+    {
+      "name": "Philippe Starck",
+      "description": "Eclectic and innovative designs"
+    },
+    {
+      "name": "David Collins",
+      "description": "Luxury interiors in hotels and restaurants"
+    },
+    { "name": "Nate Berkus", "description": "Approachable and elevated style" },
+    { "name": "Jonathan Adler", "description": "Bold, groovy interiors" },
+    {
+      "name": "India Mahdavi",
+      "description": "Use of color and playful elegance"
+    },
+    {
+      "name": "Peter Marino",
+      "description": "Modern, luxurious retail and residential spaces"
+    },
+    {
+      "name": "Victoria Hagan",
+      "description": "Balanced and refined approach"
+    },
+    { "name": "Martyn Lawrence Bullard", "description": "Glamorous interiors" },
+    {
+      "name": "Jean-Louis Deniot",
+      "description": "Eclectic and imaginative style"
+    },
+    {
+      "name": "Kelly Hoppen",
+      "description": "Serene and comfortable design approach"
+    },
+    {
+      "name": "Elle Kunnos de Voss",
+      "description": "Conceptual and artistic interiors"
+    },
+    {
+      "name": "Ilse Crawford",
+      "description": "Humanistic and emotionally aware designs"
+    },
+    {
+      "name": "Karim Rashid",
+      "description": "Futuristic and innovative designs"
+    },
+    {
+      "name": "Patricia Urquiola",
+      "description": "Playful and poetic yet functional designs"
+    },
+    {
+      "name": "Ryan Korban",
+      "description": "Luxury retail and residential designs"
+    },
+    { "name": "Jaime Hayon", "description": "Whimsical, artistic interiors" },
+    {
+      "name": "Suzanne Kasler",
+      "description": "Sophisticated and inviting style"
+    },
+    {
+      "name": "Shawn Henderson",
+      "description": "Refined and comfortable interiors"
+    },
+    {
+      "name": "Christian Liaigre",
+      "description": "Minimalist, luxurious designs"
+    },
+    {
+      "name": "Alessandra Branca",
+      "description": "Bold use of color and pattern"
+    },
+    {
+      "name": "Emily Henderson",
+      "description": "Bright, clean, and eclectic style"
+    },
+    { "name": "Rose Tarlow", "description": "Timeless and elegant approach" },
+    { "name": "Kelly Deck", "description": "Modern, coastal-inspired designs" },
+    {
+      "name": "Marcel Wanders",
+      "description": "Iconic and bold design aesthetic"
+    },
+    {
+      "name": "Kathryn M. Ireland",
+      "description": "Comfortable, bohemian style"
+    },
+    {
+      "name": "Steven Gambrel",
+      "description": "Custom detailing and historical inspiration"
+    },
+    { "name": "Ken Fulk", "description": "Layered, narrative-driven designs" },
+    {
+      "name": "Bunny Williams",
+      "description": "Comfortable yet elegant style"
+    },
+    {
+      "name": "Tom Dixon",
+      "description": "Innovative use of materials and industrial aesthetic"
+    }
+  ]
+}

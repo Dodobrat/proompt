@@ -13,7 +13,7 @@ export function Sidebar({
   return (
     <Component
       className={cn(
-        "sticky top-16 h-[calc(100vh_-_64px)] w-full max-w-80 overflow-hidden bg-card",
+        "sticky top-16 h-[calc(100vh_-_64px)] w-full max-w-sm overflow-hidden bg-card",
         className,
       )}
     >

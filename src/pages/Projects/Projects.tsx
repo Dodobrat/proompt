@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   generatePath,
   Link,
@@ -34,30 +34,59 @@ function initProjects() {
 function ProjectsList() {
   const params = useParams();
   const [projects, setProjects] = useState<Project[]>(initProjects);
+  const [projectForEdit, setProjectForEdit] = useState<Project | null>(null);
 
-  console.log(params);
+  const deleteProject = (project: Project) => () => {
+    DB.deleteEntry({
+      key: DB.KEYS.PROJECTS,
+      matcherFn: (p: Project) => p.id !== project.id,
+      onError: () => toast.error("Failed to delete project"),
+      onSuccess: () => {
+        toast.success(`Project "${project.projectName}" deleted successfully`);
+        setProjects(initProjects);
+      },
+    });
+  };
 
   return (
     <Sidebar className="sm:border-r-px sm:border-r-border">
-      <div className="p-2">
-        <AddForm onCreate={() => setProjects(initProjects)} />
-        <Separator className="my-2" />
-        <div className="grid gap-2 pb-4">
+      <div className="px-2 py-4">
+        <AddForm
+          defaultValues={projectForEdit}
+          onCreate={() => setProjects(initProjects)}
+          onUpdate={() => setProjects(initProjects)}
+          onCancel={() => setProjectForEdit(null)}
+        />
+        <Separator className="my-4" />
+        <div className="grid gap-4">
           {projects.map((project) => (
-            <div key={project.id} className="flex w-full gap-2">
+            <div
+              key={project.id}
+              className="grid grid-flow-col grid-cols-[1fr_auto_auto] items-start gap-2"
+            >
               <Button
                 asChild
                 variant={params?.id === project.id ? "secondary" : "ghost"}
-                className="grow justify-start"
+                className="grow justify-start truncate"
               >
                 <Link to={generatePath(Routes.Project, { id: project.id })}>
                   {project.projectName}
                 </Link>
               </Button>
-              <Button size="icon" variant="outline">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => setProjectForEdit(project)}
+                className="shrink-0"
+              >
                 <Edit2 />
               </Button>
-              <Button size="icon" variant="destructive">
+              <Button
+                size="icon"
+                variant="destructive"
+                onClick={deleteProject(project)}
+                className="shrink-0"
+              >
                 <Trash2 />
               </Button>
             </div>
@@ -69,6 +98,8 @@ function ProjectsList() {
 }
 
 const projectSchema = z.object({
+  id: z.string().optional(),
+  createdAt: z.string().optional(),
   projectName: z.string().min(2).max(50),
 });
 
@@ -91,16 +122,43 @@ function AddForm({
   defaultValues,
   onCreate,
   onUpdate,
+  onCancel,
 }: {
-  defaultValues?: z.infer<typeof projectSchema>;
+  defaultValues?: z.infer<typeof projectSchema> | null;
   onCreate?: (data: z.infer<typeof projectSchema>) => void;
   onUpdate?: (data: z.infer<typeof projectSchema>) => void;
+  onCancel?: () => void;
 }) {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (defaultValues) {
+      setShow(true);
+    }
+  }, [defaultValues]);
+
   const onSubmit = (data: z.infer<typeof projectSchema>) => {
     if (defaultValues) {
+      const dataToSubmit = {
+        ...defaultValues,
+        ...data,
+      };
+
+      DB.update({
+        key: DB.KEYS.PROJECTS,
+        data: dataToSubmit,
+        matcherFn: (project: Project) => project.id === dataToSubmit.id,
+        onError: () => toast.error("Failed to update project"),
+        onSuccess: () => {
+          toast.success(`Project "${data.projectName}" updated successfully`);
+          setShow(false);
+          if (dataToSubmit.id) {
+            navigate(generatePath(Routes.Project, { id: dataToSubmit.id }));
+          }
+        },
+      });
+
       return onUpdate?.(data);
     }
 
@@ -129,7 +187,10 @@ function AddForm({
     <div className="grid gap-2">
       <Button
         variant={show ? "destructive" : "outline"}
-        onClick={() => setShow((v) => !v)}
+        onClick={() => {
+          setShow((v) => !v);
+          onCancel?.();
+        }}
       >
         {show ? "Cancel Creation" : "Create New Project"}
       </Button>

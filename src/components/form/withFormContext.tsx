@@ -62,8 +62,6 @@ export function withFormContext<ComponentPropTypes>(
         control={control}
         defaultValue={defaultValue}
         render={(props) => {
-          console.log(props);
-
           const getClearFieldMethod = () => {
             if (!isClearable) return {};
             if (!props.field.value) return {};

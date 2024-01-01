@@ -1,0 +1,73 @@
+{
+  "data": [
+    {
+      "name": "Frank Lloyd Wright",
+      "description": "Fallingwater, Guggenheim Museum"
+    },
+    { "name": "Le Corbusier", "description": "Pioneer of modern architecture" },
+    { "name": "Zaha Hadid", "description": "Known for futuristic designs" },
+    { "name": "I.M. Pei", "description": "Louvre Pyramid" },
+    {
+      "name": "Ludwig Mies van der Rohe",
+      "description": "Figurehead of modernist architecture"
+    },
+    {
+      "name": "Antoni Gaud\u00ed",
+      "description": "Sagrada Fam\u00edlia, unique organic forms"
+    },
+    { "name": "Renzo Piano", "description": "The Shard in London" },
+    { "name": "Norman Foster", "description": "High-tech architecture" },
+    { "name": "Jean Nouvel", "description": "Louvre Abu Dhabi" },
+    {
+      "name": "Tadao Ando",
+      "description": "Creative use of natural light and concrete"
+    },
+    {
+      "name": "Santiago Calatrava",
+      "description": "Sculptural bridges and buildings"
+    },
+    { "name": "Frank Gehry", "description": "Guggenheim Museum Bilbao" },
+    {
+      "name": "Oscar Niemeyer",
+      "description": "Modern architecture in Brazil"
+    },
+    { "name": "Daniel Libeskind", "description": "Jewish Museum in Berlin" },
+    {
+      "name": "Bjarke Ingels",
+      "description": "Innovative and sustainable designs"
+    },
+    { "name": "Rem Koolhaas", "description": "Unconventional buildings" },
+    { "name": "Louis Sullivan", "description": "Mentor to Frank Lloyd Wright" },
+    {
+      "name": "Alvar Aalto",
+      "description": "Humanistic approach to modernism"
+    },
+    { "name": "Richard Meier", "description": "Use of white in designs" },
+    { "name": "Rafael Moneo", "description": "Contextual designs" },
+    { "name": "Philip Johnson", "description": "Glass House" },
+    { "name": "Eero Saarinen", "description": "TWA Flight Center" },
+    {
+      "name": "Peter Zumthor",
+      "description": "Sensory experience in architecture"
+    },
+    {
+      "name": "Louis Kahn",
+      "description": "Monumental and monolithic designs"
+    },
+    {
+      "name": "Kenzo Tange",
+      "description": "Proponent of Metabolism in architecture"
+    },
+    { "name": "Walter Gropius", "description": "Founded the Bauhaus School" },
+    { "name": "Richard Rogers", "description": "Centre Pompidou" },
+    { "name": "Kazuyo Sejima", "description": "Minimalist designs" },
+    {
+      "name": "David Adjaye",
+      "description": "National Museum of African American History"
+    },
+    {
+      "name": "Charles and Ray Eames",
+      "description": "Contributions in architecture and furniture design"
+    }
+  ]
+}

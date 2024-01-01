@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "name": "Eye-Level Angle",
+      "description": "Aligns the viewer's perspective with the scene, offering a natural view."
+    },
+    {
+      "name": "Low Angle",
+      "description": "Camera below eye level, looking up. Makes buildings look imposing."
+    },
+    {
+      "name": "High Angle",
+      "description": "Camera above the scene, providing an overview of interior layout or building structure."
+    },
+    {
+      "name": "Bird's-Eye View",
+      "description": "Extreme high angle, showing top view of a structure or interior."
+    },
+    {
+      "name": "Worm's-Eye View",
+      "description": "Extreme low angle from ground level, creating a sense of awe for tall structures."
+    },
+    {
+      "name": "Oblique Angle",
+      "description": "Camera is tilted, making vertical lines appear at an angle."
+    },
+    {
+      "name": "Dutch Angle",
+      "description": "Similar to oblique angle but more extreme, creating a sense of disorientation."
+    },
+    {
+      "name": "Wide Shot",
+      "description": "Captures a broad view, useful for entire buildings or large interior spaces."
+    },
+    {
+      "name": "Close-Up",
+      "description": "Focuses on specific architectural or interior details."
+    },
+    {
+      "name": "Panoramic View",
+      "description": "Wide, unbroken view for capturing landscapes or large structures."
+    }
+  ]
+}
