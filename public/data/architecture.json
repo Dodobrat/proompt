@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "filterTitle": "Architecture",
+    "filterType": "list"
+  },
   "data": [
     {
       "name": "Shape and Configuration",

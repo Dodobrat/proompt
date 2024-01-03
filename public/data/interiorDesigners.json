@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "filterTitle": "Interior Designers",
+    "filterType": "grid"
+  },
   "data": [
     {
       "name": "Kelly Wearstler",

@@ -1,4 +1,10 @@
-type DataResponse<TData> = Promise<{ data: TData[] }>;
+type DataResponse<TData> = Promise<{ meta: Meta; data: TData[] }>;
+
+export enum FilterType {
+  Grid = "grid",
+  List = "list",
+}
+type Meta = { filterTitle: string; filterType: FilterType };
 
 type NamedEntry = { name: string };
 type Entry = NamedEntry & { description: string };

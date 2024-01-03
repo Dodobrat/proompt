@@ -12,65 +12,74 @@ const filterQueryKeys = {
   roomTypes: () => [...filterQueryKeys.all(), "roomTypes"],
 } as const;
 
-const queryConfigs = {
-  angles: {
+export function useGetFilterAngles() {
+  return useQuery({
     queryKey: filterQueryKeys.angles(),
     queryFn: filtersApi.getAngles,
     staleTime: Infinity,
     gcTime: Infinity,
-  },
-  architects: {
+  });
+}
+
+export function useGetFilterArchitects() {
+  return useQuery({
     queryKey: filterQueryKeys.architects(),
     queryFn: filtersApi.getArchitects,
     staleTime: Infinity,
     gcTime: Infinity,
-  },
-  architecture: {
+  });
+}
+
+export function useGetFilterArchitecture() {
+  return useQuery({
     queryKey: filterQueryKeys.architecture(),
     queryFn: filtersApi.getArchitecture,
     staleTime: Infinity,
     gcTime: Infinity,
-  },
-  furniture: {
+  });
+}
+
+export function useGetFilterFurniture() {
+  return useQuery({
     queryKey: filterQueryKeys.furniture(),
     queryFn: filtersApi.getFurniture,
     staleTime: Infinity,
     gcTime: Infinity,
-  },
-  interiorDesigners: {
+  });
+}
+
+export function useGetFilterInteriorDesigners() {
+  return useQuery({
     queryKey: filterQueryKeys.interiorDesigners(),
     queryFn: filtersApi.getInteriorDesigners,
     staleTime: Infinity,
     gcTime: Infinity,
-  },
-  roomTypes: {
+  });
+}
+
+export function useGetFilterRoomTypes() {
+  return useQuery({
     queryKey: filterQueryKeys.roomTypes(),
     queryFn: filtersApi.getRoomTypes,
     staleTime: Infinity,
     gcTime: Infinity,
-  },
-} as const;
-
-export function useGetFilterAngles() {
-  return useQuery(queryConfigs.angles);
+  });
 }
 
-export function useGetFilterArchitects() {
-  return useQuery(queryConfigs.architects);
-}
+export function useGetAllFilters() {
+  const angles = useGetFilterAngles();
+  const architects = useGetFilterArchitects();
+  const architecture = useGetFilterArchitecture();
+  const furniture = useGetFilterFurniture();
+  const interiorDesigners = useGetFilterInteriorDesigners();
+  const roomTypes = useGetFilterRoomTypes();
 
-export function useGetFilterArchitecture() {
-  return useQuery(queryConfigs.architecture);
-}
-
-export function useGetFilterFurniture() {
-  return useQuery(queryConfigs.furniture);
-}
-
-export function useGetFilterInteriorDesigners() {
-  return useQuery(queryConfigs.interiorDesigners);
-}
-
-export function useGetFilterRoomTypes() {
-  return useQuery(queryConfigs.roomTypes);
+  return {
+    angles,
+    architects,
+    architecture,
+    furniture,
+    interiorDesigners,
+    roomTypes,
+  };
 }

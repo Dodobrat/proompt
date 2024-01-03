@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "filterTitle": "Architects",
+    "filterType": "grid"
+  },
   "data": [
     {
       "name": "Frank Lloyd Wright",

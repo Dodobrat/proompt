@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "filterTitle": "Furniture",
+    "filterType": "list"
+  },
   "data": [
     {
       "name": "Mid-Century Modern",

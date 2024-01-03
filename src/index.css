@@ -82,4 +82,23 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  @media (pointer: fine) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--foreground) var(--background);
+    }
+    ::-webkit-scrollbar {
+      @apply h-3 w-3;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply rounded-full border-2 border-solid border-background bg-foreground/30;
+    }
+    ::-webkit-scrollbar-track {
+      @apply bg-background;
+    }
+    ::-webkit-scrollbar-corner {
+      @apply bg-background;
+    }
+  }
 }

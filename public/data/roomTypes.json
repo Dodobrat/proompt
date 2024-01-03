@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "filterTitle": "Room Types",
+    "filterType": "grid"
+  },
   "data": [
     { "name": "Living Room" },
     { "name": "Kitchen" },

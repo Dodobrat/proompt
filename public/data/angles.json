@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "filterTitle": "Angles",
+    "filterType": "grid"
+  },
   "data": [
     {
       "name": "Eye-Level Angle",

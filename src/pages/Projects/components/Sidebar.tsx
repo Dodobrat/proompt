@@ -1,4 +1,3 @@
-import { ScrollArea } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 export function Sidebar({
@@ -17,7 +16,7 @@ export function Sidebar({
         className,
       )}
     >
-      <ScrollArea className="h-full">{children}</ScrollArea>
+      <div className="h-full overflow-auto">{children}</div>
     </Component>
   );
 }
