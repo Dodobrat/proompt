@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useFormContext, useFormState, useWatch } from "react-hook-form";
+import { useFormContext, useFormState } from "react-hook-form";
 import { Search, SendHorizonal, X } from "lucide-react";
 import { z } from "zod";
 
@@ -102,8 +102,8 @@ export function Project() {
 }
 
 function ChatForm({ children }: { children?: React.ReactNode }) {
-  const { control } = useFormContext();
-  const watchedFilters = useWatch({ control, name: "filters" });
+  // const { control } = useFormContext();
+  // const watchedFilters = useWatch({ control, name: "filters" });
 
   return (
     <div className="grid min-h-full content-end gap-4">
