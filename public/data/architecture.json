@@ -6,6 +6,7 @@
   "data": [
     {
       "name": "Shape and Configuration",
+      "filterName": "shape",
       "options": [
         "Rectangular shape",
         "L-shaped configuration",
@@ -26,6 +27,7 @@
     },
     {
       "name": "Facade and Exterior Design",
+      "filterName": "facade",
       "options": [
         "Symmetrical facade",
         "Asymmetrical design",
@@ -46,6 +48,7 @@
     },
     {
       "name": "Styles",
+      "filterName": "style",
       "options": [
         "Modern",
         "Contemporary",
@@ -101,6 +104,7 @@
     },
     {
       "name": "Luxurious Residential Types",
+      "filterName": "residential",
       "options": [
         "Luxury Single-Family Home",
         "High-End Apartment",
@@ -121,6 +125,7 @@
     },
     {
       "name": "Luxurious Commercial/Recreational Types",
+      "filterName": "commercial",
       "options": [
         "Luxury Retail Store",
         "Boutique Hotel",

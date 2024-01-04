@@ -11,7 +11,7 @@ import {
 
 export type FormError = { message: string };
 
-export type FormContextInputHOC<T> = T & {
+export type FormContextInput<T> = T & {
   name: string;
   label: React.ReactNode;
   hint?: React.ReactNode;
@@ -23,6 +23,10 @@ export type FormContextInputHOC<T> = T & {
   isClearable?: boolean;
   clearValue?: unknown;
   error?: FormError;
+  formItemClassName?: string;
+  formLabelClassName?: string;
+  formDescriptionClassName?: string;
+  formMessageClassName?: string;
 };
 
 /**
@@ -39,7 +43,7 @@ export type FormContextInputHOC<T> = T & {
 export function withFormContext<ComponentPropTypes>(
   Component: React.ElementType,
   defaultInputValue?: unknown,
-): React.FC<FormContextInputHOC<ComponentPropTypes>> {
+): React.FC<FormContextInput<ComponentPropTypes>> {
   const normalizedDefaultValue =
     typeof defaultInputValue === "undefined" ? "" : defaultInputValue;
 
@@ -52,8 +56,12 @@ export function withFormContext<ComponentPropTypes>(
     controllerRenderProps,
     isClearable,
     clearValue = "",
+    formItemClassName,
+    formLabelClassName,
+    formDescriptionClassName,
+    formMessageClassName,
     ...rest
-  }: FormContextInputHOC<ComponentPropTypes>) {
+  }: FormContextInput<ComponentPropTypes>) {
     const { control } = useFormContext();
 
     return (
@@ -85,13 +93,17 @@ export function withFormContext<ComponentPropTypes>(
           };
 
           return (
-            <FormItem>
-              <FormLabel>{label}</FormLabel>
+            <FormItem className={formItemClassName}>
+              <FormLabel className={formLabelClassName}>{label}</FormLabel>
               <FormControl>
                 <Component {...inputProps} />
               </FormControl>
-              <FormDescription>{hint}</FormDescription>
-              <FormMessage />
+              {Boolean(hint) && (
+                <FormDescription className={formDescriptionClassName}>
+                  {hint}
+                </FormDescription>
+              )}
+              <FormMessage className={formMessageClassName} />
             </FormItem>
           );
         }}
