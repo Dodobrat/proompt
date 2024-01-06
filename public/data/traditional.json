@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "filterTitle": "Traditional",
+    "filterName": "traditional",
+    "filterParentId": 4
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Thomasville",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Ethan Allen",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Bassett Furniture",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Bernhardt Furniture",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Drexel Heritage",
+      "description": ""
+    }
+  ]
+}

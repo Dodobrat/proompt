@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "filterTitle": "Mid-Century Modern",
+    "filterName": "midCenturyModern",
+    "filterParentId": 4
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Herman Miller",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Knoll",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Eames Office",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Heywood-Wakefield",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "George Nelson",
+      "description": ""
+    }
+  ]
+}

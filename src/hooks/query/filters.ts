@@ -4,82 +4,46 @@ import { filtersApi } from "@/api";
 
 const filterQueryKeys = {
   all: () => ["filters"],
-  angles: () => [...filterQueryKeys.all(), "angles"],
-  architects: () => [...filterQueryKeys.all(), "architects"],
-  architecture: () => [...filterQueryKeys.all(), "architecture"],
-  furniture: () => [...filterQueryKeys.all(), "furniture"],
-  interiorDesigners: () => [...filterQueryKeys.all(), "interiorDesigners"],
-  roomTypes: () => [...filterQueryKeys.all(), "roomTypes"],
+  tabs: () => [...filterQueryKeys.all(), "tabs"],
+  groups: () => [...filterQueryKeys.all(), "groups"],
 } as const;
 
-export function useGetFilterAngles() {
+export function useGetFilterTabs() {
   return useQuery({
-    queryKey: filterQueryKeys.angles(),
-    queryFn: filtersApi.getAngles,
+    queryKey: filterQueryKeys.all(),
+    queryFn: filtersApi.getFilterTabs,
     staleTime: Infinity,
     gcTime: Infinity,
   });
 }
 
-export function useGetFilterArchitects() {
+export function useGetAllFilterGroups() {
   return useQuery({
-    queryKey: filterQueryKeys.architects(),
-    queryFn: filtersApi.getArchitects,
+    queryKey: filterQueryKeys.groups(),
+    queryFn: filtersApi.getAllFilterGroups,
     staleTime: Infinity,
     gcTime: Infinity,
   });
 }
 
-export function useGetFilterArchitecture() {
-  return useQuery({
-    queryKey: filterQueryKeys.architecture(),
-    queryFn: filtersApi.getArchitecture,
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-}
+export function useGetAllGroupedFilters() {
+  const { data: tabs } = useGetFilterTabs();
+  const { data: groups } = useGetAllFilterGroups();
 
-export function useGetFilterFurniture() {
-  return useQuery({
-    queryKey: filterQueryKeys.furniture(),
-    queryFn: filtersApi.getFurniture,
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-}
+  if (!tabs || !groups) return null;
 
-export function useGetFilterInteriorDesigners() {
-  return useQuery({
-    queryKey: filterQueryKeys.interiorDesigners(),
-    queryFn: filtersApi.getInteriorDesigners,
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-}
+  const groupedFilters = tabs.data
+    .sort((a, b) => a.order - b.order)
+    .map((tab) => {
+      const tabGroups = groups.filter(
+        (group) => group?.meta.filterParentId === tab.id,
+      );
 
-export function useGetFilterRoomTypes() {
-  return useQuery({
-    queryKey: filterQueryKeys.roomTypes(),
-    queryFn: filtersApi.getRoomTypes,
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-}
+      return {
+        ...tab,
+        groups: tabGroups,
+      };
+    });
 
-export function useGetAllFilters() {
-  const angles = useGetFilterAngles();
-  const architects = useGetFilterArchitects();
-  const architecture = useGetFilterArchitecture();
-  const furniture = useGetFilterFurniture();
-  const interiorDesigners = useGetFilterInteriorDesigners();
-  const roomTypes = useGetFilterRoomTypes();
-
-  return {
-    angles,
-    architects,
-    architecture,
-    furniture,
-    interiorDesigners,
-    roomTypes,
-  };
+  return groupedFilters;
 }

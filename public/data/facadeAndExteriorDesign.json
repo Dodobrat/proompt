@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "filterTitle": "Facade and Exterior Design",
+    "filterName": "facadeAndExteriorDesign",
+    "filterParentId": 3
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Symmetrical facade",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Asymmetrical design",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Glass facade",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Vertical siding",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Horizontal siding",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Green roof",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Roof terrace",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Stone exterior",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Wood paneling",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Decorative balconies",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Brick masonry",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Stucco finish",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Metal cladding",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Ornate moldings",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Large picture windows",
+      "description": ""
+    }
+  ]
+}

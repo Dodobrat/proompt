@@ -10,7 +10,8 @@
     "lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "format": "prettier --write .",
     "lint:format": "npm run lint:fix && npm run format",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generateManifest": "node scripts/generateFilterFilesManifest.js"
   },
   "dependencies": {
     "@hookform/resolvers": "3.3.3",

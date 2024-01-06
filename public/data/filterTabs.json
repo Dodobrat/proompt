@@ -1,0 +1,40 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "order": 1,
+      "name": "Angles",
+      "choices": "single"
+    },
+    {
+      "id": 2,
+      "order": 2,
+      "name": "Architects",
+      "choices": "single"
+    },
+    {
+      "id": 3,
+      "order": 3,
+      "name": "Architecture",
+      "choices": "multiple"
+    },
+    {
+      "id": 4,
+      "order": 4,
+      "name": "Furniture",
+      "choices": "multiple"
+    },
+    {
+      "id": 5,
+      "order": 5,
+      "name": "Interior Designers",
+      "choices": "single"
+    },
+    {
+      "id": 6,
+      "order": 6,
+      "name": "Room Types",
+      "choices": "single"
+    }
+  ]
+}

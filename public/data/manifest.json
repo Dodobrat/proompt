@@ -1,0 +1,18 @@
+{
+  "data": [
+    "angles.json",
+    "architects.json",
+    "artDeco.json",
+    "contemporary.json",
+    "facadeAndExteriorDesign.json",
+    "industrial.json",
+    "interiorDesigners.json",
+    "luxuriousCommercialTypes.json",
+    "luxuriousResidentialTypes.json",
+    "midCenturyModern.json",
+    "roomTypes.json",
+    "shapeAndConfiguration.json",
+    "styles.json",
+    "traditional.json"
+  ]
+}

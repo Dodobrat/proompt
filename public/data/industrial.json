@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "filterTitle": "Industrial",
+    "filterName": "industrial",
+    "filterParentId": 4
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Restoration Hardware",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "West Elm",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Crate & Barrel",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Pottery Barn",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Timothy Oulton",
+      "description": ""
+    }
+  ]
+}

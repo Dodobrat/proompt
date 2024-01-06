@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "filterTitle": "Shape and Configuration",
+    "filterName": "shapeAndConfiguration",
+    "filterParentId": 3
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Rectangular shape",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "L-shaped configuration",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Complex series of volumes",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Central courtyard design",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Multi-story structure",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Single-story structure",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Two-story building",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Interconnected volumes",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Tower-like structure",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "U-shaped layout",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Circular design elements",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Split-level layout",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Modular construction",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Geodesic dome structure",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Atrium-centered design",
+      "description": ""
+    }
+  ]
+}

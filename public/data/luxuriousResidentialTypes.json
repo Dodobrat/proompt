@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "filterTitle": "Luxurious Residential Types",
+    "filterName": "luxuriousResidentialTypes",
+    "filterParentId": 3
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Luxury Single-Family Home",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "High-End Apartment",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Luxury Condominium",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Penthouse Suite",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Mansion",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Villa",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Townhouse",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Loft",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Waterfront Properties",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Country Estate",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Castle/Chateau",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Ski Chalet",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Beachfront House",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Custom-Built Home",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Historical Residences",
+      "description": ""
+    }
+  ]
+}

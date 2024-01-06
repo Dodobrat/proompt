@@ -13,7 +13,7 @@ export type FormError = { message: string };
 
 export type FormContextInput<T> = T & {
   name: string;
-  label: React.ReactNode;
+  label?: React.ReactNode;
   hint?: React.ReactNode;
   id?: string;
   defaultValue?: string | unknown;
@@ -94,7 +94,9 @@ export function withFormContext<ComponentPropTypes>(
 
           return (
             <FormItem className={formItemClassName}>
-              <FormLabel className={formLabelClassName}>{label}</FormLabel>
+              {Boolean(label) && (
+                <FormLabel className={formLabelClassName}>{label}</FormLabel>
+              )}
               <FormControl>
                 <Component {...inputProps} />
               </FormControl>

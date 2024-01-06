@@ -1,105 +1,157 @@
 {
   "meta": {
     "filterTitle": "Interior Designers",
-    "filterType": "grid"
+    "filterName": "interiorDesigners",
+    "filterParentId": 5
   },
   "data": [
     {
+      "imgSrc": "",
       "name": "Kelly Wearstler",
       "description": "Vibrant, sophisticated interiors"
     },
     {
+      "imgSrc": "",
       "name": "Philippe Starck",
       "description": "Eclectic and innovative designs"
     },
     {
+      "imgSrc": "",
       "name": "David Collins",
       "description": "Luxury interiors in hotels and restaurants"
     },
-    { "name": "Nate Berkus", "description": "Approachable and elevated style" },
-    { "name": "Jonathan Adler", "description": "Bold, groovy interiors" },
     {
+      "imgSrc": "",
+      "name": "Nate Berkus",
+      "description": "Approachable and elevated style"
+    },
+    {
+      "imgSrc": "",
+      "name": "Jonathan Adler",
+      "description": "Bold, groovy interiors"
+    },
+    {
+      "imgSrc": "",
       "name": "India Mahdavi",
       "description": "Use of color and playful elegance"
     },
     {
+      "imgSrc": "",
       "name": "Peter Marino",
       "description": "Modern, luxurious retail and residential spaces"
     },
     {
+      "imgSrc": "",
       "name": "Victoria Hagan",
       "description": "Balanced and refined approach"
     },
-    { "name": "Martyn Lawrence Bullard", "description": "Glamorous interiors" },
     {
+      "imgSrc": "",
+      "name": "Martyn Lawrence Bullard",
+      "description": "Glamorous interiors"
+    },
+    {
+      "imgSrc": "",
       "name": "Jean-Louis Deniot",
       "description": "Eclectic and imaginative style"
     },
     {
+      "imgSrc": "",
       "name": "Kelly Hoppen",
       "description": "Serene and comfortable design approach"
     },
     {
+      "imgSrc": "",
       "name": "Elle Kunnos de Voss",
       "description": "Conceptual and artistic interiors"
     },
     {
+      "imgSrc": "",
       "name": "Ilse Crawford",
       "description": "Humanistic and emotionally aware designs"
     },
     {
+      "imgSrc": "",
       "name": "Karim Rashid",
       "description": "Futuristic and innovative designs"
     },
     {
+      "imgSrc": "",
       "name": "Patricia Urquiola",
       "description": "Playful and poetic yet functional designs"
     },
     {
+      "imgSrc": "",
       "name": "Ryan Korban",
       "description": "Luxury retail and residential designs"
     },
-    { "name": "Jaime Hayon", "description": "Whimsical, artistic interiors" },
     {
+      "imgSrc": "",
+      "name": "Jaime Hayon",
+      "description": "Whimsical, artistic interiors"
+    },
+    {
+      "imgSrc": "",
       "name": "Suzanne Kasler",
       "description": "Sophisticated and inviting style"
     },
     {
+      "imgSrc": "",
       "name": "Shawn Henderson",
       "description": "Refined and comfortable interiors"
     },
     {
+      "imgSrc": "",
       "name": "Christian Liaigre",
       "description": "Minimalist, luxurious designs"
     },
     {
+      "imgSrc": "",
       "name": "Alessandra Branca",
       "description": "Bold use of color and pattern"
     },
     {
+      "imgSrc": "",
       "name": "Emily Henderson",
       "description": "Bright, clean, and eclectic style"
     },
-    { "name": "Rose Tarlow", "description": "Timeless and elegant approach" },
-    { "name": "Kelly Deck", "description": "Modern, coastal-inspired designs" },
     {
+      "imgSrc": "",
+      "name": "Rose Tarlow",
+      "description": "Timeless and elegant approach"
+    },
+    {
+      "imgSrc": "",
+      "name": "Kelly Deck",
+      "description": "Modern, coastal-inspired designs"
+    },
+    {
+      "imgSrc": "",
       "name": "Marcel Wanders",
       "description": "Iconic and bold design aesthetic"
     },
     {
+      "imgSrc": "",
       "name": "Kathryn M. Ireland",
       "description": "Comfortable, bohemian style"
     },
     {
+      "imgSrc": "",
       "name": "Steven Gambrel",
       "description": "Custom detailing and historical inspiration"
     },
-    { "name": "Ken Fulk", "description": "Layered, narrative-driven designs" },
     {
+      "imgSrc": "",
+      "name": "Ken Fulk",
+      "description": "Layered, narrative-driven designs"
+    },
+    {
+      "imgSrc": "",
       "name": "Bunny Williams",
       "description": "Comfortable yet elegant style"
     },
     {
+      "imgSrc": "",
       "name": "Tom Dixon",
       "description": "Innovative use of materials and industrial aesthetic"
     }

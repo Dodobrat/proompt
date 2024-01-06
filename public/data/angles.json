@@ -1,46 +1,57 @@
 {
   "meta": {
     "filterTitle": "Angles",
-    "filterType": "grid"
+    "filterName": "angles",
+    "filterParentId": 1
   },
   "data": [
     {
+      "imgSrc": "",
       "name": "Eye-Level Angle",
       "description": "Aligns the viewer's perspective with the scene, offering a natural view."
     },
     {
+      "imgSrc": "",
       "name": "Low Angle",
       "description": "Camera below eye level, looking up. Makes buildings look imposing."
     },
     {
+      "imgSrc": "",
       "name": "High Angle",
       "description": "Camera above the scene, providing an overview of interior layout or building structure."
     },
     {
+      "imgSrc": "",
       "name": "Bird's-Eye View",
       "description": "Extreme high angle, showing top view of a structure or interior."
     },
     {
+      "imgSrc": "",
       "name": "Worm's-Eye View",
       "description": "Extreme low angle from ground level, creating a sense of awe for tall structures."
     },
     {
+      "imgSrc": "",
       "name": "Oblique Angle",
       "description": "Camera is tilted, making vertical lines appear at an angle."
     },
     {
+      "imgSrc": "",
       "name": "Dutch Angle",
       "description": "Similar to oblique angle but more extreme, creating a sense of disorientation."
     },
     {
+      "imgSrc": "",
       "name": "Wide Shot",
       "description": "Captures a broad view, useful for entire buildings or large interior spaces."
     },
     {
+      "imgSrc": "",
       "name": "Close-Up",
       "description": "Focuses on specific architectural or interior details."
     },
     {
+      "imgSrc": "",
       "name": "Panoramic View",
       "description": "Wide, unbroken view for capturing landscapes or large structures."
     }

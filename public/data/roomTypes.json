@@ -1,39 +1,164 @@
 {
   "meta": {
     "filterTitle": "Room Types",
-    "filterType": "grid"
+    "filterName": "roomTypes",
+    "filterParentId": 6
   },
   "data": [
-    { "name": "Living Room", "description": "" },
-    { "name": "Kitchen", "description": "" },
-    { "name": "Dining Room", "description": "" },
-    { "name": "Bedrooms", "description": "" },
-    { "name": "Bathrooms", "description": "" },
-    { "name": "Master Suite", "description": "" },
-    { "name": "Home Office", "description": "" },
-    { "name": "Guest Room", "description": "" },
-    { "name": "Family Room/Den", "description": "" },
-    { "name": "Laundry Room", "description": "" },
-    { "name": "Mudroom", "description": "" },
-    { "name": "Pantry", "description": "" },
-    { "name": "Game Room", "description": "" },
-    { "name": "Home Theater", "description": "" },
-    { "name": "Library", "description": "" },
-    { "name": "Wine Cellar", "description": "" },
-    { "name": "Gym/Exercise Room", "description": "" },
-    { "name": "Sauna/Spa", "description": "" },
-    { "name": "Indoor Pool", "description": "" },
-    { "name": "Conservatory/Sunroom", "description": "" },
-    { "name": "Art Studio", "description": "" },
-    { "name": "Music Room", "description": "" },
-    { "name": "Garage", "description": "" },
-    { "name": "Garden Room/Orangery", "description": "" },
-    { "name": "Terrace/Balcony", "description": "" },
-    { "name": "Roof Deck", "description": "" },
-    { "name": "Outdoor Kitchen/BBQ Area", "description": "" },
-    { "name": "Pool House", "description": "" },
-    { "name": "Guest House", "description": "" },
-    { "name": "Greenhouse", "description": "" },
-    { "name": "Boathouse", "description": "" }
+    {
+      "imgSrc": "",
+      "name": "Living Room",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Kitchen",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Dining Room",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Bedrooms",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Bathrooms",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Master Suite",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Home Office",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Guest Room",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Family Room/Den",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Laundry Room",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Mudroom",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Pantry",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Game Room",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Home Theater",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Library",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Wine Cellar",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Gym/Exercise Room",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Sauna/Spa",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Indoor Pool",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Conservatory/Sunroom",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Art Studio",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Music Room",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Garage",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Garden Room/Orangery",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Terrace/Balcony",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Roof Deck",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Outdoor Kitchen/BBQ Area",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Pool House",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Guest House",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Greenhouse",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Boathouse",
+      "description": ""
+    }
   ]
 }

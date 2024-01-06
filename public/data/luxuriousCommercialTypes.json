@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "filterTitle": "Luxurious Commercial/Recreational Types",
+    "filterName": "luxuriousCommercialTypes",
+    "filterParentId": 3
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Luxury Retail Store",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Boutique Hotel",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Fine Dining Restaurant",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Designer Boutique",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Luxury Shopping Mall",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Art Gallery",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Private Club",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Gourmet Food Market",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Wine Bar",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Luxury Spa Resort",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Opera House",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Golf Course and Club",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Yacht Club",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Private Cinema",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Rooftop Lounge",
+      "description": ""
+    }
+  ]
+}

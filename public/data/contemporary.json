@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "filterTitle": "Contemporary",
+    "filterName": "contemporary",
+    "filterParentId": 4
+  },
+  "data": [
+    {
+      "imgSrc": "",
+      "name": "Philippe Starck",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Roche Bobois",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Jonathan Adler",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Kartell",
+      "description": ""
+    },
+    {
+      "imgSrc": "",
+      "name": "Zaha Hadid Design",
+      "description": ""
+    }
+  ]
+}

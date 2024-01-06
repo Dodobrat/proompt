@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useFormContext, useFormState } from "react-hook-form";
-import { Search, SendHorizonal, X } from "lucide-react";
+import { useFormContext, useFormState, useWatch } from "react-hook-form";
+import { SendHorizonal, X } from "lucide-react";
 import { z } from "zod";
 
-import { Entry, FilterType, OptionsEntry } from "@/api/filters";
 import { Container } from "@/components";
 import { Form, FormInput } from "@/components/form";
 import {
@@ -19,64 +18,20 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { useGetAllFilters } from "@/hooks/query";
+import { useGetAllGroupedFilters } from "@/hooks/query";
 
 import { Sidebar } from "./components";
 
 const promptSchema = z.object({
   prompt: z.string().min(2).max(500),
-  filters: z
-    .object({
-      angles: z.string().optional(),
-      architects: z.string().optional(),
-      interiorDesigners: z.string().optional(),
-      roomTypes: z.string().optional(),
-      architecture: z
-        .object({
-          commercial: z.string().optional(),
-          facade: z.string().optional(),
-          residential: z.string().optional(),
-          shape: z.string().optional(),
-          style: z.string().optional(),
-        })
-        .optional(),
-      furniture: z
-        .object({
-          artDeco: z.string().optional(),
-          contemporary: z.string().optional(),
-          industrial: z.string().optional(),
-          midCenturyModern: z.string().optional(),
-          traditional: z.string().optional(),
-        })
-        .optional(),
-    })
-    .optional(),
+  filters: z.any().optional(),
 });
 
 type PromptSchema = z.infer<typeof promptSchema>;
 
 const defaultPromptValues: PromptSchema = {
   prompt: "",
-  filters: {
-    angles: "",
-    architects: "",
-    interiorDesigners: "",
-    roomTypes: "",
-    architecture: {
-      commercial: "",
-      facade: "",
-      residential: "",
-      shape: "",
-      style: "",
-    },
-    furniture: {
-      artDeco: "",
-      contemporary: "",
-      industrial: "",
-      midCenturyModern: "",
-      traditional: "",
-    },
-  },
+  filters: {},
 };
 
 export function Project() {
@@ -92,7 +47,7 @@ export function Project() {
       defaultValues={defaultPromptValues}
     >
       <Container className="self-end">
-        <ChatForm></ChatForm>
+        <ChatForm />
       </Container>
       <Sidebar className="sm:border-l-px sm:border-l-border" as="aside">
         <FilterTabs />
@@ -101,16 +56,84 @@ export function Project() {
   );
 }
 
-function ChatForm({ children }: { children?: React.ReactNode }) {
-  // const { control } = useFormContext();
-  // const watchedFilters = useWatch({ control, name: "filters" });
-
+function ChatForm() {
   return (
     <div className="grid min-h-full content-end gap-4">
-      {children}
+      <AppliedFilters />
       <ChatPrompt />
     </div>
   );
+}
+
+function AppliedFilters() {
+  const { control, setValue } = useFormContext();
+  const watchedFilters = useWatch({ control, name: "filters" });
+
+  return null;
+
+  const filtersArr = Object.entries(watchedFilters);
+
+  if (!filtersArr.length) return null;
+
+  return filtersArr.map(([key, value]) => {
+    if (typeof value === "string" && Boolean(value)) {
+      const getNewFilterValue = () => {
+        const copy = { ...watchedFilters };
+        delete copy[key];
+        return copy;
+      };
+
+      return (
+        <div key={key}>
+          <span>{key}:</span>
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => setValue("filters", getNewFilterValue())}
+          >
+            {value}
+            <X className="ml-2" />
+          </Button>
+        </div>
+      );
+    }
+
+    if (typeof value === "object" && !Array.isArray(value)) {
+      return (
+        <div key={key}>
+          <span>{key}:</span>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(value as object).map(([k, v]) => {
+              if (!v?.length) return null;
+              return (
+                <div>
+                  <span>{k}:</span>
+                  {v.map((x: string) => {
+                    return (
+                      <Button
+                        key={x}
+                        type="button"
+                        size="sm"
+                        onClick={() => {
+                          const newValue = v.filter((y: string) => y !== x);
+                          setValue(`filters.${key}.${k}`, newValue);
+                        }}
+                      >
+                        {x}
+                        <X className="ml-2" />
+                      </Button>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    return "Unhandled Filter - " + key;
+  });
 }
 
 function ChatPrompt() {
@@ -135,7 +158,10 @@ function ChatPrompt() {
 }
 
 function FilterTabs() {
-  const filters = useGetAllFilters();
+  const filters = useGetAllGroupedFilters();
+  console.log(filters);
+
+  return null;
 
   const [selectedTab, setSelectedTab] = useState<string>(
     Object.entries(filters)[0][0] || "",
@@ -158,11 +184,7 @@ function FilterTabs() {
   }, [selectedTab, tabRefs]);
 
   return (
-    <Tabs
-      defaultValue={selectedTab}
-      onValueChange={setSelectedTab}
-      className="overflow-hidden"
-    >
+    <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab}>
       <TabsList className="flex h-auto w-full justify-start overflow-auto rounded-none">
         {Object.entries(filters).map(([key, value]) => {
           return (
@@ -203,139 +225,176 @@ function FilterTabs() {
   );
 }
 
-function FilterInput({
-  value,
-  onValueChange,
-}: {
-  value: string;
-  onValueChange: (value: string) => void;
-}) {
-  const searchRef = useRef<HTMLInputElement>(null);
+// function FilterInput({
+//   value,
+//   onValueChange,
+// }: {
+//   value: string;
+//   onValueChange: (value: string) => void;
+// }) {
+//   const searchRef = useRef<HTMLInputElement>(null);
 
-  return (
-    <div className="relative px-2">
-      <Search className="pointer-events-none absolute inset-y-0 left-4 h-full opacity-50" />
-      <Input
-        className="px-10"
-        placeholder="Filter by name"
-        value={value}
-        onChange={({ target }) => onValueChange(target.value)}
-        ref={searchRef}
-      />
-      {Boolean(value) && (
-        <Button
-          variant="ghost"
-          size="icon"
-          type="button"
-          onClick={() => {
-            onValueChange("");
-            searchRef.current?.focus();
-          }}
-          className="absolute inset-y-0 right-2"
-        >
-          <X />
-        </Button>
-      )}
-    </div>
-  );
-}
+//   return (
+//     <div className="relative px-2">
+//       <Search className="pointer-events-none absolute inset-y-0 left-4 h-full opacity-50" />
+//       <Input
+//         className="px-10"
+//         placeholder="Filter by name"
+//         value={value}
+//         onChange={({ target }) => onValueChange(target.value)}
+//         ref={searchRef}
+//       />
+//       {Boolean(value) && (
+//         <Button
+//           variant="ghost"
+//           size="icon"
+//           type="button"
+//           onClick={() => {
+//             onValueChange("");
+//             searchRef.current?.focus();
+//           }}
+//           className="absolute inset-y-0 right-2"
+//         >
+//           <X />
+//         </Button>
+//       )}
+//     </div>
+//   );
+// }
 
-function GridFilters({
-  data,
-  filterKey,
-}: {
-  data: Entry[];
-  filterKey: string;
-}) {
-  const [search, setSearch] = useState("");
+// function NoResults() {
+//   return (
+//     <div className="grid gap-1 py-4 text-center">
+//       <div className="text-2xl font-bold">No Results</div>
+//       <div className="text-base">Try another search</div>
+//     </div>
+//   );
+// }
 
-  const filteredData = search
-    ? data.filter((v) => v.name.toLowerCase().includes(search.toLowerCase()))
-    : data;
+// function GridFilters({
+//   data,
+//   filterKey,
+// }: {
+//   data: Entry[];
+//   filterKey: string;
+// }) {
+//   const [search, setSearch] = useState("");
 
-  return (
-    <TabsContent value={filterKey}>
-      <FilterInput value={search} onValueChange={setSearch} />
-      <FormInput.RadioGroup
-        name={`filters.${filterKey}`}
-        label=""
-        className="grid gap-2 px-2 pb-2"
-        formItemClassName="pt-2"
-      >
-        {filteredData?.map((v) => {
-          return (
-            <label htmlFor={v.name} key={v.name}>
-              <FormItem className="grid cursor-pointer grid-cols-[auto_1fr] content-start items-start gap-x-4 gap-y-1 rounded border py-4 pl-3 pr-2 hover:bg-foreground/5">
-                <FormControl className="mt-1">
-                  <RadioGroupItem id={v.name} value={v.name} />
-                </FormControl>
-                <FormLabel className="pointer-events-none text-base font-medium leading-tight">
-                  {v.name}
-                </FormLabel>
-                {Boolean(v.description) && (
-                  <FormDescription className="pointer-events-none col-start-2">
-                    {v.description}
-                  </FormDescription>
-                )}
-              </FormItem>
-            </label>
-          );
-        })}
-      </FormInput.RadioGroup>
-    </TabsContent>
-  );
-}
+//   const filteredData = search
+//     ? data.filter((v) => v.name.toLowerCase().includes(search.toLowerCase()))
+//     : data;
 
-function ListFilters({
-  data,
-  filterKey,
-}: {
-  data: OptionsEntry[];
-  filterKey: string;
-}) {
-  const [search, setSearch] = useState("");
+//   const hasNoResults = Boolean(search) && !filteredData?.length;
 
-  return (
-    <TabsContent value={filterKey}>
-      <FilterInput value={search} onValueChange={setSearch} />
+//   return (
+//     <TabsContent value={filterKey}>
+//       <FilterInput value={search} onValueChange={setSearch} />
 
-      {data?.map((v) => {
-        const name = `filters.${filterKey}.${v.filterName}`;
+//       {hasNoResults && <NoResults />}
 
-        const filteredOptions = search
-          ? v.options?.filter((o) =>
-              o.toLowerCase().includes(search.toLowerCase()),
-            )
-          : v.options;
+//       <FormInput.RadioGroup
+//         name={`filters.${filterKey}`}
+//         className="grid gap-2 px-2 pb-2"
+//         formItemClassName="pt-2"
+//       >
+//         {filteredData?.map((v) => {
+//           return (
+//             <label htmlFor={v.name} key={v.name}>
+//               <FormItem className="grid cursor-pointer grid-cols-[auto_1fr] content-start items-start gap-x-4 gap-y-1 rounded border py-4 pl-3 pr-2 hover:bg-foreground/5">
+//                 <FormControl className="mt-1">
+//                   <RadioGroupItem id={v.name} value={v.name} />
+//                 </FormControl>
+//                 <FormLabel className="pointer-events-none text-base font-medium leading-tight">
+//                   {v.name}
+//                 </FormLabel>
+//                 {Boolean(v.description) && (
+//                   <FormDescription className="pointer-events-none col-start-2">
+//                     {v.description}
+//                   </FormDescription>
+//                 )}
+//               </FormItem>
+//             </label>
+//           );
+//         })}
+//       </FormInput.RadioGroup>
+//     </TabsContent>
+//   );
+// }
 
-        if (!filteredOptions?.length) return null;
+// function ListFilters({
+//   data,
+//   filterKey,
+// }: {
+//   data: OptionsEntry[];
+//   filterKey: string;
+// }) {
+//   const [search, setSearch] = useState("");
 
-        return (
-          <FormInput.RadioGroup
-            name={name}
-            key={name}
-            label={v.name}
-            className="mb-2 grid gap-0"
-            formItemClassName="grid gap-2 space-y-0 pb-2 border rounded m-2"
-            formLabelClassName="text-xl pt-2 pb-0 pl-4"
-          >
-            {filteredOptions?.map((o) => {
-              return (
-                <label htmlFor={o} key={o}>
-                  <FormItem className="grid cursor-pointer grid-cols-[auto_1fr] content-start items-start gap-x-4 gap-y-1 py-4 pl-3 pr-2 hover:bg-foreground/5">
-                    <FormControl className="mt-1">
-                      <RadioGroupItem id={o} value={o} />
-                    </FormControl>
-                    <FormLabel className="pointer-events-none text-base font-medium leading-tight">
-                      {o}
-                    </FormLabel>
-                  </FormItem>
-                </label>
-              );
-            })}
-          </FormInput.RadioGroup>
-        );
-      })}
-    </TabsContent>
-  );
-}
+//   const filteredByGroup = data?.reduce((acc: Record<string, number>, curr) => {
+//     acc[curr.name] = curr.options?.filter((o) =>
+//       o.toLowerCase().includes(search.toLowerCase()),
+//     ).length;
+//     return acc;
+//   }, {});
+
+//   const hasNoResults =
+//     Boolean(search) && Object.values(filteredByGroup).every((v) => !v);
+
+//   return (
+//     <TabsContent value={filterKey}>
+//       <FilterInput value={search} onValueChange={setSearch} />
+
+//       {hasNoResults && <NoResults />}
+
+//       {data?.map((v) => {
+//         const name = `filters.${filterKey}.${v.filterName}`;
+
+//         const filteredOptions = search
+//           ? v.options?.filter((o) =>
+//               o.toLowerCase().includes(search.toLowerCase()),
+//             )
+//           : v.options;
+
+//         if (!filteredOptions?.length) return null;
+
+//         return (
+//           <div key={name} className="m-2 grid rounded border pb-2">
+//             <p className="py-2 pl-4 text-xl font-medium">{v.name}</p>
+//             {filteredOptions?.map((o) => (
+//               <ListGroupFilters key={o} option={o} name={name} />
+//             ))}
+//           </div>
+//         );
+//       })}
+//     </TabsContent>
+//   );
+// }
+
+// function ListGroupFilters({ option, name }: { option: string; name: string }) {
+//   const { control, setValue } = useFormContext();
+//   const watchedFilters = useWatch({ control, name });
+
+//   const value: string[] = watchedFilters ?? [];
+
+//   return (
+//     <label htmlFor={option} key={option}>
+//       <FormInput.Checkbox
+//         name={option}
+//         label={option}
+//         id={option}
+//         formItemClassName="space-y-0 flex flex-row-reverse justify-end items-start gap-2 p-4 cursor-pointer hover:bg-foreground/5"
+//         formLabelClassName="pointer-events-none text-base font-medium leading-tight -mt-0.5"
+//         checked={value.includes(option)}
+//         onCheckedChange={(isChecked) => {
+//           if (isChecked) {
+//             return setValue(name, [...value, option]);
+//           }
+//           setValue(
+//             name,
+//             value.filter((v) => v !== option),
+//           );
+//         }}
+//       />
+//     </label>
+//   );
+// }
