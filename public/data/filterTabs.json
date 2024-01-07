@@ -4,37 +4,37 @@
       "id": 1,
       "order": 1,
       "name": "Angles",
-      "choices": "single"
+      "choiceType": "single"
     },
     {
       "id": 2,
       "order": 2,
       "name": "Architects",
-      "choices": "single"
+      "choiceType": "single"
     },
     {
       "id": 3,
       "order": 3,
       "name": "Architecture",
-      "choices": "multiple"
+      "choiceType": "multiple"
     },
     {
       "id": 4,
       "order": 4,
       "name": "Furniture",
-      "choices": "multiple"
+      "choiceType": "multiple"
     },
     {
       "id": 5,
       "order": 5,
       "name": "Interior Designers",
-      "choices": "single"
+      "choiceType": "single"
     },
     {
       "id": 6,
       "order": 6,
       "name": "Room Types",
-      "choices": "single"
+      "choiceType": "single"
     }
   ]
 }

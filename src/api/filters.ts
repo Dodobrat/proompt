@@ -15,7 +15,7 @@ export type Filter = {
   id: number;
   order: number;
   name: string;
-  choices: FilterChoice;
+  choiceType: FilterChoice;
 };
 
 export type FilterGroupMeta = {

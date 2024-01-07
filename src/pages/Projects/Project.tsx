@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
 import { useFormContext, useFormState, useWatch } from "react-hook-form";
-import { SendHorizonal, X } from "lucide-react";
+import { Search, SendHorizonal, X } from "lucide-react";
 import { z } from "zod";
 
+import {
+  FilterChoice,
+  FilterGroupData,
+  FilterGroupFileData,
+} from "@/api/filters";
 import { Container } from "@/components";
 import { Form, FormInput } from "@/components/form";
 import {
   Button,
-  FormControl,
-  FormDescription,
-  FormItem,
-  FormLabel,
+  Checkbox,
   Input,
   RadioGroupItem,
   Tabs,
@@ -18,7 +21,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { useGetAllGroupedFilters } from "@/hooks/query";
+import { GroupedFilter, useGetAllGroupedFilters } from "@/hooks/query";
+import { cn } from "@/lib/utils";
 
 import { Sidebar } from "./components";
 
@@ -158,14 +162,9 @@ function ChatPrompt() {
 }
 
 function FilterTabs() {
-  const filters = useGetAllGroupedFilters();
-  console.log(filters);
+  const filterTabs = useGetAllGroupedFilters();
 
-  return null;
-
-  const [selectedTab, setSelectedTab] = useState<string>(
-    Object.entries(filters)[0][0] || "",
-  );
+  const [selectedTab, setSelectedTab] = useState(filterTabs?.[0]?.name ?? "");
 
   const tabRefs = useRef<Record<string, HTMLButtonElement>>({});
 
@@ -183,218 +182,253 @@ function FilterTabs() {
     });
   }, [selectedTab, tabRefs]);
 
+  if (!filterTabs?.length) return null;
+
   return (
-    <Tabs defaultValue={selectedTab} onValueChange={setSelectedTab}>
+    <Tabs defaultValue={filterTabs[0]?.name} onValueChange={setSelectedTab}>
       <TabsList className="flex h-auto w-full justify-start overflow-auto rounded-none">
-        {Object.entries(filters).map(([key, value]) => {
-          return (
-            <TabsTrigger
-              key={key}
-              value={key}
-              id={key}
-              className="px-4 py-4"
-              type="button"
-              ref={addElToRef}
-            >
-              {value.data?.meta?.filterTitle?.toUpperCase()}
-            </TabsTrigger>
-          );
-        })}
+        {filterTabs.map((tab) => (
+          <TabsTrigger
+            key={`filterTab_${tab.id}`}
+            value={tab.name}
+            id={tab.name}
+            className="shrink-0 grow px-4 py-4"
+            type="button"
+            ref={addElToRef}
+          >
+            {tab.name}
+          </TabsTrigger>
+        ))}
       </TabsList>
-      {Object.entries(filters).map(([key, value]) => {
-        const filterType = value.data?.meta?.filterType;
-
-        const isGrid = filterType === FilterType.Grid;
-        const isList = filterType === FilterType.List;
-
-        if (isGrid) {
-          const data = value.data?.data as Entry[];
-
-          return <GridFilters key={key} data={data} filterKey={key} />;
-        }
-
-        if (isList) {
-          const data = value.data?.data as OptionsEntry[];
-
-          return <ListFilters key={key} data={data} filterKey={key} />;
-        }
-
-        return "Unhandled Filter";
-      })}
+      {filterTabs.map((tab) => (
+        <TabsContent key={`filterTabContent_${tab.id}`} value={tab.name}>
+          <FilterTabContent tab={tab} />
+        </TabsContent>
+      ))}
     </Tabs>
   );
 }
 
-// function FilterInput({
-//   value,
-//   onValueChange,
-// }: {
-//   value: string;
-//   onValueChange: (value: string) => void;
-// }) {
-//   const searchRef = useRef<HTMLInputElement>(null);
+function FilterInput({
+  value,
+  onValueChange,
+}: {
+  value: string;
+  onValueChange: (value: string) => void;
+}) {
+  const searchRef = useRef<HTMLInputElement>(null);
 
-//   return (
-//     <div className="relative px-2">
-//       <Search className="pointer-events-none absolute inset-y-0 left-4 h-full opacity-50" />
-//       <Input
-//         className="px-10"
-//         placeholder="Filter by name"
-//         value={value}
-//         onChange={({ target }) => onValueChange(target.value)}
-//         ref={searchRef}
-//       />
-//       {Boolean(value) && (
-//         <Button
-//           variant="ghost"
-//           size="icon"
-//           type="button"
-//           onClick={() => {
-//             onValueChange("");
-//             searchRef.current?.focus();
-//           }}
-//           className="absolute inset-y-0 right-2"
-//         >
-//           <X />
-//         </Button>
-//       )}
-//     </div>
-//   );
-// }
+  return (
+    <div className="relative px-2">
+      <Search className="pointer-events-none absolute inset-y-0 left-4 h-full opacity-50" />
+      <Input
+        className="px-10"
+        placeholder="Filter by name"
+        value={value}
+        onChange={({ target }) => onValueChange(target.value)}
+        ref={searchRef}
+      />
+      {Boolean(value) && (
+        <Button
+          variant="ghost"
+          size="icon"
+          type="button"
+          onClick={() => {
+            onValueChange("");
+            searchRef.current?.focus();
+          }}
+          className="absolute inset-y-0 right-2"
+        >
+          <X />
+        </Button>
+      )}
+    </div>
+  );
+}
 
-// function NoResults() {
-//   return (
-//     <div className="grid gap-1 py-4 text-center">
-//       <div className="text-2xl font-bold">No Results</div>
-//       <div className="text-base">Try another search</div>
-//     </div>
-//   );
-// }
+function NoResults() {
+  return (
+    <div className="grid gap-1 py-4 text-center">
+      <div className="text-2xl font-bold">No Results</div>
+      <div className="text-base text-muted-foreground">Try another search</div>
+    </div>
+  );
+}
 
-// function GridFilters({
-//   data,
-//   filterKey,
-// }: {
-//   data: Entry[];
-//   filterKey: string;
-// }) {
-//   const [search, setSearch] = useState("");
+function NoData() {
+  return (
+    <div className="grid gap-1 py-4 text-center">
+      <div className="text-2xl font-bold">No Data</div>
+      <div className="text-base text-muted-foreground">No filters found</div>
+    </div>
+  );
+}
 
-//   const filteredData = search
-//     ? data.filter((v) => v.name.toLowerCase().includes(search.toLowerCase()))
-//     : data;
+function FilterTabContent({ tab }: { tab: GroupedFilter }) {
+  const [search, setSearch] = useState("");
 
-//   const hasNoResults = Boolean(search) && !filteredData?.length;
+  const filteredGroups = tab.groups?.reduce(
+    (acc: FilterGroupFileData<FilterGroupData>[], curr) => {
+      if (!curr) return acc;
 
-//   return (
-//     <TabsContent value={filterKey}>
-//       <FilterInput value={search} onValueChange={setSearch} />
+      const filteredData = curr.data.filter(
+        (v) =>
+          v.name.toLowerCase().includes(search.toLowerCase()) ||
+          v.description?.toLowerCase().includes(search.toLowerCase()),
+      );
 
-//       {hasNoResults && <NoResults />}
+      if (!filteredData?.length) return acc;
 
-//       <FormInput.RadioGroup
-//         name={`filters.${filterKey}`}
-//         className="grid gap-2 px-2 pb-2"
-//         formItemClassName="pt-2"
-//       >
-//         {filteredData?.map((v) => {
-//           return (
-//             <label htmlFor={v.name} key={v.name}>
-//               <FormItem className="grid cursor-pointer grid-cols-[auto_1fr] content-start items-start gap-x-4 gap-y-1 rounded border py-4 pl-3 pr-2 hover:bg-foreground/5">
-//                 <FormControl className="mt-1">
-//                   <RadioGroupItem id={v.name} value={v.name} />
-//                 </FormControl>
-//                 <FormLabel className="pointer-events-none text-base font-medium leading-tight">
-//                   {v.name}
-//                 </FormLabel>
-//                 {Boolean(v.description) && (
-//                   <FormDescription className="pointer-events-none col-start-2">
-//                     {v.description}
-//                   </FormDescription>
-//                 )}
-//               </FormItem>
-//             </label>
-//           );
-//         })}
-//       </FormInput.RadioGroup>
-//     </TabsContent>
-//   );
-// }
+      acc.push({ ...curr, data: filteredData });
 
-// function ListFilters({
-//   data,
-//   filterKey,
-// }: {
-//   data: OptionsEntry[];
-//   filterKey: string;
-// }) {
-//   const [search, setSearch] = useState("");
+      return acc;
+    },
+    [],
+  );
 
-//   const filteredByGroup = data?.reduce((acc: Record<string, number>, curr) => {
-//     acc[curr.name] = curr.options?.filter((o) =>
-//       o.toLowerCase().includes(search.toLowerCase()),
-//     ).length;
-//     return acc;
-//   }, {});
+  const hasNoData = !tab?.groups?.length;
+  const hasNoResults = Boolean(search) && !filteredGroups.length;
+  const groupCount = tab.groups?.length;
+  const isMultiSelect = tab.choiceType === FilterChoice.Multiple;
 
-//   const hasNoResults =
-//     Boolean(search) && Object.values(filteredByGroup).every((v) => !v);
+  return (
+    <>
+      <FilterInput value={search} onValueChange={setSearch} />
 
-//   return (
-//     <TabsContent value={filterKey}>
-//       <FilterInput value={search} onValueChange={setSearch} />
+      {hasNoData && <NoData />}
+      {hasNoResults && <NoResults />}
 
-//       {hasNoResults && <NoResults />}
+      {filteredGroups?.map((group) => {
+        if (!group) return "Unhandled Group";
 
-//       {data?.map((v) => {
-//         const name = `filters.${filterKey}.${v.filterName}`;
+        return (
+          <FilterGroup
+            key={`filterTabGroup_${tab.name}_${group?.meta.filterName}`}
+            group={group}
+            groupCount={groupCount}
+            isMultiSelect={isMultiSelect}
+            search={search}
+          />
+        );
+      })}
+    </>
+  );
+}
 
-//         const filteredOptions = search
-//           ? v.options?.filter((o) =>
-//               o.toLowerCase().includes(search.toLowerCase()),
-//             )
-//           : v.options;
+function FilterGroup({
+  group,
+  groupCount,
+  search,
+  isMultiSelect,
+}: {
+  group: FilterGroupFileData<FilterGroupData>;
+  groupCount: number;
+  search: string;
+  isMultiSelect: boolean;
+}) {
+  const filterName = `filters.${group.meta.filterName}`;
 
-//         if (!filteredOptions?.length) return null;
+  const { control, setValue } = useFormContext();
+  const watchedFilterGroup = useWatch({
+    control,
+    name: filterName,
+    defaultValue: isMultiSelect ? [] : "",
+  });
 
-//         return (
-//           <div key={name} className="m-2 grid rounded border pb-2">
-//             <p className="py-2 pl-4 text-xl font-medium">{v.name}</p>
-//             {filteredOptions?.map((o) => (
-//               <ListGroupFilters key={o} option={o} name={name} />
-//             ))}
-//           </div>
-//         );
-//       })}
-//     </TabsContent>
-//   );
-// }
+  const showTitle = groupCount > 1;
 
-// function ListGroupFilters({ option, name }: { option: string; name: string }) {
-//   const { control, setValue } = useFormContext();
-//   const watchedFilters = useWatch({ control, name });
+  const WrapperComponent = isMultiSelect ? Fragment : FormInput.RadioGroup;
+  const WrapperComponentProps = isMultiSelect
+    ? ({} as { name: string })
+    : {
+        name: filterName,
+        className: "grid-cols-[repeat(auto-fit,minmax(min(100%,17.5rem),1fr))]",
+      };
 
-//   const value: string[] = watchedFilters ?? [];
+  return (
+    <div
+      className={cn(
+        "m-2 rounded",
+        showTitle &&
+          "grid grid-cols-[repeat(auto-fit,minmax(min(100%,17.5rem),1fr))] gap-x-6 border p-2",
+      )}
+    >
+      {showTitle && (
+        <p className="col-span-full pb-2 text-2xl font-medium">
+          {group.meta.filterTitle}
+        </p>
+      )}
+      <WrapperComponent {...WrapperComponentProps}>
+        {group.data.map((option) => {
+          const isSelected = !isMultiSelect
+            ? watchedFilterGroup === option.name
+            : watchedFilterGroup.includes(option.name);
 
-//   return (
-//     <label htmlFor={option} key={option}>
-//       <FormInput.Checkbox
-//         name={option}
-//         label={option}
-//         id={option}
-//         formItemClassName="space-y-0 flex flex-row-reverse justify-end items-start gap-2 p-4 cursor-pointer hover:bg-foreground/5"
-//         formLabelClassName="pointer-events-none text-base font-medium leading-tight -mt-0.5"
-//         checked={value.includes(option)}
-//         onCheckedChange={(isChecked) => {
-//           if (isChecked) {
-//             return setValue(name, [...value, option]);
-//           }
-//           setValue(
-//             name,
-//             value.filter((v) => v !== option),
-//           );
-//         }}
-//       />
-//     </label>
-//   );
-// }
+          return (
+            <label
+              key={option.name}
+              className={cn(
+                "grid cursor-pointer grid-cols-[auto_1fr] gap-2 py-3 hover:bg-foreground/10",
+                !showTitle && isSelected && "border-foreground",
+                showTitle && isSelected && "bg-foreground/15",
+                Boolean(option.imgSrc) && "pt-2",
+                showTitle && "-mx-2 px-2",
+                !showTitle && "rounded border px-2",
+              )}
+            >
+              {!isMultiSelect && (
+                <RadioGroupItem className="mt-0.5" value={option.name} />
+              )}
+              {isMultiSelect && (
+                <Checkbox
+                  className="mt-0.5"
+                  checked={watchedFilterGroup.includes(option.name)}
+                  onCheckedChange={(isChecked) => {
+                    if (isChecked) {
+                      return setValue(filterName, [
+                        ...watchedFilterGroup,
+                        option.name,
+                      ]);
+                    }
+                    setValue(
+                      filterName,
+                      (watchedFilterGroup as string[]).filter(
+                        (v) => v !== option.name,
+                      ),
+                    );
+                  }}
+                />
+              )}
+              <div>
+                {Boolean(option.imgSrc) && (
+                  <img
+                    src={option.imgSrc}
+                    alt={option.description || option.name}
+                    loading="lazy"
+                    className="mb-2 aspect-video w-full rounded object-cover"
+                  />
+                )}
+                <Highlighter
+                  autoEscape
+                  className="block text-base font-medium leading-tight"
+                  highlightClassName="bg-foreground/70 text-background rounded -mx-0.5 px-0.5"
+                  searchWords={search.split(" ")}
+                  textToHighlight={option.name}
+                />
+                {Boolean(option.description) && (
+                  <Highlighter
+                    autoEscape
+                    className="block pt-1 text-sm leading-tight text-muted-foreground"
+                    highlightClassName="bg-foreground/60 text-background rounded font-medium"
+                    searchWords={search.split(" ")}
+                    textToHighlight={option.description}
+                  />
+                )}
+              </div>
+            </label>
+          );
+        })}
+      </WrapperComponent>
+    </div>
+  );
+}

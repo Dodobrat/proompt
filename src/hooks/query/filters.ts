@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { filtersApi } from "@/api";
+import { Filter, FilterGroupData, FilterGroupFileData } from "@/api/filters";
 
 const filterQueryKeys = {
   all: () => ["filters"],
@@ -26,7 +27,11 @@ export function useGetAllFilterGroups() {
   });
 }
 
-export function useGetAllGroupedFilters() {
+export type GroupedFilter = Filter & {
+  groups: (FilterGroupFileData<FilterGroupData> | null)[];
+};
+
+export function useGetAllGroupedFilters(): GroupedFilter[] | null {
   const { data: tabs } = useGetFilterTabs();
   const { data: groups } = useGetAllFilterGroups();
 
