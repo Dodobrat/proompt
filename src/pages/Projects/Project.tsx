@@ -8,7 +8,16 @@ import {
   useWatch,
 } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { MessageCircleQuestion, Search, X } from "lucide-react";
+import {
+  Edit2,
+  MessageCircleQuestion,
+  Pin,
+  PinOff,
+  Search,
+  Wand2,
+  X,
+} from "lucide-react";
+import { useUpdateEffect } from "usehooks-ts";
 import { z } from "zod";
 
 import {
@@ -44,11 +53,12 @@ import { cn } from "@/lib/utils";
 import { Sidebar } from "./components";
 
 const promptSchema = z.object({
-  prompt: z.string().optional(),
+  prompt: z.string().max(500).min(1, "Prompt cannot be empty"),
   filters: z.any().optional(),
 });
 
 type PromptSchema = z.infer<typeof promptSchema>;
+type SavedPrompt = PromptSchema & { id: string };
 
 const defaultPromptValues: PromptSchema = {
   prompt: "",
@@ -67,8 +77,25 @@ export function Project() {
     defaultPromptValues,
   );
 
+  const {
+    getValue: getLatestStoredProjectPrompts,
+    setValue: setStoredProjectPrompts,
+  } = useLocalStorage<PromptSchema[]>(
+    DB.KEYS.PROJECT_KEY_PROMPTS(params.id!),
+    [],
+  );
+
+  const [temporaryPrompts, setTemporaryPrompts] = useState(() =>
+    getLatestStoredProjectPrompts(),
+  );
+
+  useUpdateEffect(() => {
+    setTemporaryPrompts(getLatestStoredProjectPrompts());
+  }, [params.id]);
+
   const onSubmit = (data: PromptSchema) => {
     setStoredProjectFilters(data);
+    setTemporaryPrompts((prev) => [...prev, structuredClone(data)]);
     // SEND DATA TO API
   };
 
@@ -80,9 +107,41 @@ export function Project() {
     );
   };
 
+  const handleOnSavePrompt = (prompt: PromptSchema) => {
+    const promptTimestampKey = new Date().getTime().toString();
+
+    setStoredProjectPrompts((prev) => [
+      ...prev,
+      { ...prompt, id: promptTimestampKey },
+    ]);
+
+    setTemporaryPrompts((prev) => {
+      const filteredPrompts = prev.filter(
+        (p) => JSON.stringify(p) !== JSON.stringify(prompt),
+      );
+      return [...filteredPrompts, { ...prompt, id: promptTimestampKey }];
+    });
+  };
+
+  const handleOnUnpinPrompt = (prompt: SavedPrompt) => {
+    setStoredProjectPrompts((prev) =>
+      prev.filter((p) => (p as SavedPrompt).id !== prompt.id),
+    );
+
+    setTemporaryPrompts((prev) => {
+      return prev.map((p) => {
+        if ((p as SavedPrompt).id === prompt.id) {
+          const unpinnedPrompt = structuredClone(p);
+          delete (unpinnedPrompt as Partial<SavedPrompt>).id;
+          return unpinnedPrompt;
+        }
+        return p;
+      });
+    });
+  };
+
   const defaultValues = useMemo(() => {
     const storedData = getLatestStoredProjectFilters();
-
     if (!storedData) return defaultPromptValues;
     return storedData;
   }, [getLatestStoredProjectFilters]);
@@ -97,7 +156,18 @@ export function Project() {
       key={params.id}
     >
       <Container className="self-end">
-        <ChatForm onEnterPress={handleOnEnterPress} />
+        <ChatForm onEnterPress={handleOnEnterPress}>
+          {temporaryPrompts.map((prompt, index) => (
+            <PromptEntry
+              key={JSON.stringify(prompt) + index}
+              data={prompt}
+              onSavePrompt={handleOnSavePrompt}
+              onUnpinPrompt={handleOnUnpinPrompt}
+              onEditPrompt={console.log}
+              onRefinePrompt={console.log}
+            />
+          ))}
+        </ChatForm>
       </Container>
       <Sidebar className="sm:border-l-px sm:border-l-border" as="aside">
         <FilterTabs />
@@ -106,11 +176,136 @@ export function Project() {
   );
 }
 
-function ChatForm({ onEnterPress }: { onEnterPress?: () => void }) {
+function PromptEntry({
+  data,
+  onSavePrompt,
+  onUnpinPrompt,
+  onEditPrompt,
+  onRefinePrompt,
+}: {
+  data: PromptSchema;
+  onSavePrompt: (prompt: PromptSchema) => void;
+  onUnpinPrompt: (prompt: SavedPrompt) => void;
+  onEditPrompt: (prompt: PromptSchema | SavedPrompt) => void;
+  onRefinePrompt: (prompt: PromptSchema | SavedPrompt) => void;
+}) {
+  const hasAppliedFilters = Object.values(data.filters).some((v) =>
+    Array.isArray(v) ? v.length : v,
+  );
+
+  const isSavedPrompt = Boolean((data as SavedPrompt)?.id);
+
+  const promptTitle = isSavedPrompt
+    ? new Date(Number((data as SavedPrompt).id)).toLocaleString()
+    : "Temporary Prompt";
+
   return (
-    <div className="grid min-h-full content-end">
-      <p>SAVED PROMPTS</p>
-      <div className="rounded-t border bg-foreground/5">
+    <article className="rounded border p-2">
+      <div className="flex flex-wrap items-start gap-2 pb-2">
+        <p className="grow text-xl font-medium">{promptTitle}</p>
+        <Button
+          className="shrink-0"
+          variant="outline"
+          type="button"
+          onClick={() => onRefinePrompt(data)}
+        >
+          <Wand2 className="mr-2" />
+          Refine with AI
+        </Button>
+        <Button
+          className="shrink-0"
+          variant="secondary"
+          type="button"
+          onClick={() => onEditPrompt(data)}
+        >
+          <Edit2 className="mr-2" />
+          Edit
+        </Button>
+        <Button
+          className="shrink-0"
+          variant="secondary"
+          type="button"
+          onClick={() =>
+            isSavedPrompt
+              ? onUnpinPrompt(data as SavedPrompt)
+              : onSavePrompt(data)
+          }
+        >
+          {isSavedPrompt ? (
+            <>
+              <PinOff className="mr-2" />
+              Unpin
+            </>
+          ) : (
+            <>
+              <Pin className="mr-2" />
+              Pin
+            </>
+          )}
+        </Button>
+      </div>
+      <p className="">{data.prompt}</p>
+      {hasAppliedFilters && <PromptEntryFiltersSummary data={data} />}
+    </article>
+  );
+}
+
+function PromptEntryFiltersSummary({
+  data,
+}: {
+  data: PromptSchema | SavedPrompt;
+}) {
+  const { data: filterGroups } = useGetAllFilterGroups();
+
+  return (
+    <div className="pt-2">
+      {Object.entries(data.filters).map(([key, value], index) => {
+        if (!value) return null;
+        if (Array.isArray(value) && !value.length) return null;
+
+        const groupTitle = filterGroups?.find((v) => v?.meta.filterName === key)
+          ?.meta?.filterTitle;
+
+        return (
+          <div key={`prompt_${key}_${index}`}>
+            <strong>{groupTitle}: </strong>
+            {Array.isArray(value) && Boolean(value.length) && (
+              <>
+                {value.map((v, i) => {
+                  const isLast = i === value.length - 1;
+                  return (
+                    <span
+                      key={`prompt_${key}_${index}_${v}`}
+                      className="text-muted-foreground"
+                    >
+                      {v}
+                      {!isLast && ", "}
+                    </span>
+                  );
+                })}
+              </>
+            )}
+            {typeof value === "string" && Boolean(value) && (
+              <span className="text-muted-foreground">{value}</span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ChatForm({
+  children,
+  onEnterPress,
+}: {
+  children?: React.ReactNode;
+  onEnterPress?: () => void;
+}) {
+  return (
+    <div className="grid min-h-full content-end space-y-4 pt-4">
+      {children}
+      <div className="sticky bottom-0 rounded-t border bg-background">
         <AppliedFilters />
         <ChatPrompt onEnterPress={onEnterPress} />
       </div>
@@ -220,7 +415,7 @@ function ChatPrompt({ onEnterPress }: { onEnterPress?: () => void }) {
   const { isSubmitting } = useFormState({ control });
 
   return (
-    <div className="sticky bottom-0 grid px-2 pb-4 pt-2 backdrop-blur-sm sm:grid-cols-[1fr_auto]">
+    <div className="grid p-2 sm:grid-cols-[1fr_auto]">
       <FormInput.Textarea
         name="prompt"
         placeholder="Proompt here..."
