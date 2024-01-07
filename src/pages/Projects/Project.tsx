@@ -9,6 +9,7 @@ import {
 } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import {
+  Clipboard,
   Edit2,
   MessageCircleQuestion,
   Pin,
@@ -17,7 +18,8 @@ import {
   Wand2,
   X,
 } from "lucide-react";
-import { useUpdateEffect } from "usehooks-ts";
+import { toast } from "sonner";
+import { useCopyToClipboard, useUpdateEffect } from "usehooks-ts";
 import { z } from "zod";
 
 import {
@@ -189,6 +191,15 @@ function PromptEntry({
   onEditPrompt: (prompt: PromptSchema | SavedPrompt) => void;
   onRefinePrompt: (prompt: PromptSchema | SavedPrompt) => void;
 }) {
+  const [copiedValue, copyFn] = useCopyToClipboard();
+
+  useEffect(() => {
+    if (!copiedValue) return;
+    toast.success("Copied to clipboard");
+    setTimeout(() => copyFn(""), 5000);
+  }, [copiedValue, copyFn]);
+  const promptContentRef = useRef<HTMLDivElement>(null);
+
   const hasAppliedFilters = Object.values(data.filters).some((v) =>
     Array.isArray(v) ? v.length : v,
   );
@@ -198,6 +209,26 @@ function PromptEntry({
   const promptTitle = isSavedPrompt
     ? new Date(Number((data as SavedPrompt).id)).toLocaleString()
     : "Temporary Prompt";
+
+  const handleOnCopy = () => {
+    const textDiv = promptContentRef.current;
+
+    if (!textDiv) return;
+
+    const range = document.createRange();
+    range.selectNodeContents(textDiv);
+
+    const selection = window.getSelection();
+    if (!selection) return;
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    const selectedText = selection.toString();
+
+    copyFn(selectedText);
+    selection.removeAllRanges();
+  };
 
   return (
     <article className="rounded border p-2">
@@ -211,6 +242,15 @@ function PromptEntry({
         >
           <Wand2 className="mr-2" />
           Refine with AI
+        </Button>
+        <Button
+          className="shrink-0"
+          variant="secondary"
+          type="button"
+          onClick={handleOnCopy}
+        >
+          <Clipboard className="mr-2" />
+          Copy
         </Button>
         <Button
           className="shrink-0"
@@ -244,8 +284,10 @@ function PromptEntry({
           )}
         </Button>
       </div>
-      <p className="">{data.prompt}</p>
-      {hasAppliedFilters && <PromptEntryFiltersSummary data={data} />}
+      <div ref={promptContentRef}>
+        <p className="">{data.prompt}</p>
+        {hasAppliedFilters && <PromptEntryFiltersSummary data={data} />}
+      </div>
     </article>
   );
 }
