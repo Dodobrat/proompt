@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import {
   ControllerRenderProps,
@@ -7,7 +7,7 @@ import {
   useFormState,
   useWatch,
 } from "react-hook-form";
-import { MessageCircleQuestion, Search, SendHorizonal, X } from "lucide-react";
+import { MessageCircleQuestion, Search, X } from "lucide-react";
 import { z } from "zod";
 
 import {
