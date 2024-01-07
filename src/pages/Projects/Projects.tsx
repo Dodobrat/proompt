@@ -34,9 +34,11 @@ function ProjectsList() {
   const params = useParams();
 
   const [projectForEdit, setProjectForEdit] = useState<Project | null>(null);
-  const [, setStoredProjects, getLatestStoredProjects] = useLocalStorage<
-    Project[]
-  >(DB.KEYS.PROJECTS, []);
+  const {
+    setValue: setStoredProjects,
+    getValue: getLatestStoredProjects,
+    removeValue,
+  } = useLocalStorage<Project[]>(DB.KEYS.PROJECTS, []);
 
   useEffect(() => {
     if (!params.id) return;
@@ -55,6 +57,7 @@ function ProjectsList() {
       toast.success(`Project "${project.projectName}" deleted successfully`);
       return prev.filter((p) => p.id !== project.id);
     });
+    removeValue(DB.KEYS.PROJECT_KEY_FILTERS(project.id));
   };
 
   const createProject = (project: Project) => {

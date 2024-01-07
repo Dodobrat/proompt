@@ -13,7 +13,10 @@ import { Navbar } from "./Navbar";
 export function Layout() {
   const params = useParams();
 
-  const [storedProjects] = useLocalStorage<Project[]>(DB.KEYS.PROJECTS, []);
+  const { value: storedProjects } = useLocalStorage<Project[]>(
+    DB.KEYS.PROJECTS,
+    [],
+  );
 
   const projectName = storedProjects.find((p) => p.id === params.id)
     ?.projectName;

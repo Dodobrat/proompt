@@ -59,11 +59,13 @@ export function Project() {
   const params = useParams();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [, setStoredProjectFilters, getLatestStoredProjectFilters] =
-    useLocalStorage(
-      DB.KEYS.PROJECT_KEY_FILTERS(params.id!),
-      defaultPromptValues,
-    );
+  const {
+    setValue: setStoredProjectFilters,
+    getValue: getLatestStoredProjectFilters,
+  } = useLocalStorage(
+    DB.KEYS.PROJECT_KEY_FILTERS(params.id!),
+    defaultPromptValues,
+  );
 
   const onSubmit = (data: PromptSchema) => {
     setStoredProjectFilters(data);
