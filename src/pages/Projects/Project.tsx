@@ -1,7 +1,13 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
-import { useFormContext, useFormState, useWatch } from "react-hook-form";
-import { Search, SendHorizonal, X } from "lucide-react";
+import {
+  ControllerRenderProps,
+  FieldValues,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from "react-hook-form";
+import { MessageCircleQuestion, Search, SendHorizonal, X } from "lucide-react";
 import { z } from "zod";
 
 import {
@@ -12,6 +18,10 @@ import {
 import { Container } from "@/components";
 import { Form, FormInput } from "@/components/form";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
   Button,
   Checkbox,
   Input,
@@ -21,7 +31,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { GroupedFilter, useGetAllGroupedFilters } from "@/hooks/query";
+import {
+  GroupedFilter,
+  useGetAllFilterGroups,
+  useGetAllGroupedFilters,
+} from "@/hooks/query";
 import { cn } from "@/lib/utils";
 
 import { Sidebar } from "./components";
@@ -62,81 +76,110 @@ export function Project() {
 
 function ChatForm() {
   return (
-    <div className="grid min-h-full content-end gap-4">
-      <AppliedFilters />
-      <ChatPrompt />
+    <div className="grid min-h-full content-end">
+      <p>SAVED PROMPTS</p>
+      <div className="rounded-t border bg-foreground/5">
+        <AppliedFilters />
+        <ChatPrompt />
+      </div>
     </div>
   );
 }
 
 function AppliedFilters() {
+  const { control } = useFormContext();
+  const watchedFilters = useWatch({ control, name: "filters" });
+
+  const checkAllFiltersEmpty = () => {
+    if (typeof watchedFilters !== "object") return false;
+
+    const allFiltersEmpty = Object.values(watchedFilters).every((v) => {
+      if (!v) return true;
+      if (Array.isArray(v) && !v.length) return true;
+      return false;
+    });
+
+    return allFiltersEmpty;
+  };
+
+  const getAppliedFiltersCount = () => {
+    if (typeof watchedFilters !== "object") return 0;
+
+    const count = Object.values(watchedFilters).reduce((acc: number, curr) => {
+      if (!curr) return acc;
+      if (Array.isArray(curr)) return acc + curr.length;
+      return acc + 1;
+    }, 0);
+
+    return count;
+  };
+
+  if (checkAllFiltersEmpty()) return null;
+
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="applied_filters" className="border-none">
+        <AccordionTrigger className="rounded-t border-b p-2 text-xl focus-visible:outline-transparent">
+          Applied Filters ({getAppliedFiltersCount()})
+        </AccordionTrigger>
+        <AccordionContent className="max-h-[50vh] min-h-20 space-y-4 overflow-auto p-2">
+          <AppliedFiltersContent />
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
+function AppliedFiltersContent() {
+  const { data } = useGetAllFilterGroups();
+
   const { control, setValue } = useFormContext();
   const watchedFilters = useWatch({ control, name: "filters" });
 
-  return null;
+  return Object.entries(watchedFilters).map(([key, value]) => {
+    if (!value) return null;
+    if (Array.isArray(value) && !value.length) return null;
 
-  const filtersArr = Object.entries(watchedFilters);
+    const groupTitle =
+      data?.find((v) => v?.meta.filterName === key)?.meta?.filterTitle || "";
 
-  if (!filtersArr.length) return null;
-
-  return filtersArr.map(([key, value]) => {
-    if (typeof value === "string" && Boolean(value)) {
-      const getNewFilterValue = () => {
-        const copy = { ...watchedFilters };
-        delete copy[key];
-        return copy;
-      };
-
-      return (
-        <div key={key}>
-          <span>{key}:</span>
+    return (
+      <div key={`appliedFilter_${key}`} className="">
+        <p className="pb-1 text-base font-medium">{groupTitle}</p>
+        {typeof value === "string" && (
           <Button
             type="button"
             size="sm"
-            onClick={() => setValue("filters", getNewFilterValue())}
+            onClick={() => setValue(`filters.${key}`, "")}
+            className="hover:bg-destructive hover:text-destructive-foreground"
           >
             {value}
             <X className="ml-2" />
           </Button>
-        </div>
-      );
-    }
-
-    if (typeof value === "object" && !Array.isArray(value)) {
-      return (
-        <div key={key}>
-          <span>{key}:</span>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(value as object).map(([k, v]) => {
-              if (!v?.length) return null;
-              return (
-                <div>
-                  <span>{k}:</span>
-                  {v.map((x: string) => {
-                    return (
-                      <Button
-                        key={x}
-                        type="button"
-                        size="sm"
-                        onClick={() => {
-                          const newValue = v.filter((y: string) => y !== x);
-                          setValue(`filters.${key}.${k}`, newValue);
-                        }}
-                      >
-                        {x}
-                        <X className="ml-2" />
-                      </Button>
-                    );
-                  })}
-                </div>
-              );
-            })}
+        )}
+        {Array.isArray(value) && (
+          <div className="inline-flex flex-wrap gap-2">
+            {value.map((v) => (
+              <Button
+                key={`appliedFilter_${key}_${v}`}
+                type="button"
+                size="sm"
+                className="hover:bg-destructive hover:text-destructive-foreground"
+                onClick={() =>
+                  setValue(
+                    `filters.${key}`,
+                    (value as string[]).filter((val) => val !== v),
+                  )
+                }
+              >
+                {v}
+                <X className="ml-2" />
+              </Button>
+            ))}
           </div>
-        </div>
-      );
-    }
-
-    return "Unhandled Filter - " + key;
+        )}
+      </div>
+    );
   });
 }
 
@@ -145,18 +188,16 @@ function ChatPrompt() {
   const { isDirty } = useFormState({ control });
 
   return (
-    <div className="sticky bottom-0 grid items-start gap-2 pb-4 sm:grid-cols-[1fr_auto]">
+    <div className="sticky bottom-0 grid px-2 pb-4 pt-2 backdrop-blur-sm sm:grid-cols-[1fr_auto]">
       <FormInput.Textarea
         name="prompt"
-        label=""
         placeholder="Proompt here..."
-        className="h-24 resize-none"
+        className="h-16 min-h-0 resize-none rounded-r-none"
       />
-      <div className="col-auto grid gap-2 py-1">
-        <Button type="submit" size="icon" disabled={!isDirty}>
-          <SendHorizonal />
-        </Button>
-      </div>
+      <Button className="h-16 rounded-l-none" type="submit" disabled={!isDirty}>
+        <MessageCircleQuestion className="mr-2" />
+        Proompt
+      </Button>
     </div>
   );
 }
@@ -335,6 +376,8 @@ function FilterGroup({
     defaultValue: isMultiSelect ? [] : "",
   });
 
+  // console.log(watchedFilterGroup);
+
   const showTitle = groupCount > 1;
 
   const WrapperComponent = isMultiSelect ? Fragment : FormInput.RadioGroup;
@@ -343,6 +386,11 @@ function FilterGroup({
     : {
         name: filterName,
         className: "grid-cols-[repeat(auto-fit,minmax(min(100%,17.5rem),1fr))]",
+        controllerRenderProps: (props: {
+          field: ControllerRenderProps<FieldValues, string>;
+        }) => ({
+          key: props.field.value ? undefined : "empty",
+        }),
       };
 
   return (
