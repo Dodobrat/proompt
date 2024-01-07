@@ -7,6 +7,7 @@ export * from "./form";
 export * from "./input";
 export * from "./label";
 export * from "./radio-group";
+export * from "./resizable";
 export * from "./separator";
 export * from "./sheet";
 export * from "./sonner";

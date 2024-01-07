@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import {
   ControllerRenderProps,
@@ -7,6 +7,7 @@ import {
   useFormState,
   useWatch,
 } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { MessageCircleQuestion, Search, X } from "lucide-react";
 import { z } from "zod";
 
@@ -36,12 +37,13 @@ import {
   useGetAllFilterGroups,
   useGetAllGroupedFilters,
 } from "@/hooks/query";
+import { DB } from "@/lib/db";
 import { cn } from "@/lib/utils";
 
 import { Sidebar } from "./components";
 
 const promptSchema = z.object({
-  prompt: z.string().min(2).max(500),
+  prompt: z.string().optional(),
   filters: z.any().optional(),
 });
 
@@ -53,19 +55,43 @@ const defaultPromptValues: PromptSchema = {
 };
 
 export function Project() {
+  const params = useParams();
+  const formRef = useRef<HTMLFormElement>(null);
+
   const onSubmit = (data: PromptSchema) => {
-    console.log(data);
+    DB.set({
+      key: DB.KEYS.PROJECT_KEY_FILTERS(params.id!),
+      data,
+    });
+    // SEND DATA TO API
   };
+
+  const handleOnEnterPress = () => {
+    if (!formRef.current) return;
+    // SUBMIT FORM ON ENTER PRESS (SHIFT + ENTER TO ADD NEW LINE)
+    formRef.current.dispatchEvent(
+      new Event("submit", { cancelable: true, bubbles: true }),
+    );
+  };
+
+  const defaultValues = useMemo(() => {
+    const storedData = DB.get({ key: DB.KEYS.PROJECT_KEY_FILTERS(params.id!) });
+
+    if (!storedData) return defaultPromptValues;
+    return storedData;
+  }, [params]);
 
   return (
     <Form<typeof promptSchema>
       schema={promptSchema}
       onSubmit={onSubmit}
       className="flex grow items-start gap-2"
-      defaultValues={defaultPromptValues}
+      defaultValues={defaultValues}
+      formRef={formRef}
+      key={params.id}
     >
       <Container className="self-end">
-        <ChatForm />
+        <ChatForm onEnterPress={handleOnEnterPress} />
       </Container>
       <Sidebar className="sm:border-l-px sm:border-l-border" as="aside">
         <FilterTabs />
@@ -74,13 +100,13 @@ export function Project() {
   );
 }
 
-function ChatForm() {
+function ChatForm({ onEnterPress }: { onEnterPress?: () => void }) {
   return (
     <div className="grid min-h-full content-end">
       <p>SAVED PROMPTS</p>
       <div className="rounded-t border bg-foreground/5">
         <AppliedFilters />
-        <ChatPrompt />
+        <ChatPrompt onEnterPress={onEnterPress} />
       </div>
     </div>
   );
@@ -183,7 +209,7 @@ function AppliedFiltersContent() {
   });
 }
 
-function ChatPrompt() {
+function ChatPrompt({ onEnterPress }: { onEnterPress?: () => void }) {
   const { control } = useFormContext();
   const { isDirty } = useFormState({ control });
 
@@ -193,6 +219,14 @@ function ChatPrompt() {
         name="prompt"
         placeholder="Proompt here..."
         className="h-16 min-h-0 resize-none rounded-r-none"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && e.shiftKey) return;
+          if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+            onEnterPress?.();
+          }
+        }}
       />
       <Button className="h-16 rounded-l-none" type="submit" disabled={!isDirty}>
         <MessageCircleQuestion className="mr-2" />

@@ -9,6 +9,7 @@ type FormProps<T extends z.ZodSchema> = {
   defaultValues?: z.infer<T>;
   className?: string;
   id?: string;
+  formRef?: React.RefObject<HTMLFormElement>;
 };
 
 export function Form<TSchema extends z.ZodSchema>({
@@ -18,6 +19,7 @@ export function Form<TSchema extends z.ZodSchema>({
   children,
   onSubmit,
   defaultValues,
+  formRef,
 }: FormProps<TSchema>) {
   const methods = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -30,6 +32,7 @@ export function Form<TSchema extends z.ZodSchema>({
         id={id}
         className={className}
         onSubmit={methods.handleSubmit(onSubmit)}
+        ref={formRef}
       >
         {children}
       </form>
