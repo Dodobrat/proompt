@@ -16,12 +16,9 @@ import { Routes } from "@/routes";
 
 import { Project, Projects } from "./Projects";
 
-// TODO: Add filter context
-// TODO: Add Text area submit on Enter
 // TODO: Add Sheet and filter groups
 // TODO: linkup with OpenAI
 // TODO: Copy to clipboard btn
-// clearable badges ( like online store )
 
 const router = createBrowserRouter(
   createRoutesFromElements(

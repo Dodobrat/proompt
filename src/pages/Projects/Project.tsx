@@ -32,6 +32,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
+import { useLocalStorage } from "@/hooks";
 import {
   GroupedFilter,
   useGetAllFilterGroups,
@@ -58,11 +59,14 @@ export function Project() {
   const params = useParams();
   const formRef = useRef<HTMLFormElement>(null);
 
+  const [, setStoredProjectFilters, getLatestStoredProjectFilters] =
+    useLocalStorage(
+      DB.KEYS.PROJECT_KEY_FILTERS(params.id!),
+      defaultPromptValues,
+    );
+
   const onSubmit = (data: PromptSchema) => {
-    DB.set({
-      key: DB.KEYS.PROJECT_KEY_FILTERS(params.id!),
-      data,
-    });
+    setStoredProjectFilters(data);
     // SEND DATA TO API
   };
 
@@ -75,11 +79,11 @@ export function Project() {
   };
 
   const defaultValues = useMemo(() => {
-    const storedData = DB.get({ key: DB.KEYS.PROJECT_KEY_FILTERS(params.id!) });
+    const storedData = getLatestStoredProjectFilters();
 
     if (!storedData) return defaultPromptValues;
     return storedData;
-  }, [params]);
+  }, [getLatestStoredProjectFilters]);
 
   return (
     <Form<typeof promptSchema>
@@ -211,7 +215,7 @@ function AppliedFiltersContent() {
 
 function ChatPrompt({ onEnterPress }: { onEnterPress?: () => void }) {
   const { control } = useFormContext();
-  const { isDirty } = useFormState({ control });
+  const { isSubmitting } = useFormState({ control });
 
   return (
     <div className="sticky bottom-0 grid px-2 pb-4 pt-2 backdrop-blur-sm sm:grid-cols-[1fr_auto]">
@@ -228,7 +232,11 @@ function ChatPrompt({ onEnterPress }: { onEnterPress?: () => void }) {
           }
         }}
       />
-      <Button className="h-16 rounded-l-none" type="submit" disabled={!isDirty}>
+      <Button
+        className="h-16 rounded-l-none"
+        type="submit"
+        disabled={isSubmitting}
+      >
         <MessageCircleQuestion className="mr-2" />
         Proompt
       </Button>
