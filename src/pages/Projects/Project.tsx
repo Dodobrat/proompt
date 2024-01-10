@@ -52,7 +52,14 @@ import {
 import { DB } from "@/lib/db";
 import { cn } from "@/lib/utils";
 
-import { Sidebar } from "./components";
+import { ResizeDirection, Sidebar } from "./components";
+
+const FILTERS_SIDEBAR_RESIZE_CONFIG = {
+  minWidth: 300,
+  maxWidth: 700,
+  direction: ResizeDirection.RightToLeft,
+  storageKey: DB.KEYS.FILTERS_SIDEBAR_WIDTH,
+};
 
 const promptSchema = z.object({
   prompt: z.string().max(500).min(1, "Prompt cannot be empty"),
@@ -171,7 +178,11 @@ export function Project() {
           ))}
         </ChatForm>
       </Container>
-      <Sidebar className="sm:border-l-px sm:border-l-border" as="aside">
+      <Sidebar
+        className="sm:border-l-px sm:border-l-border"
+        as="aside"
+        resizeOptions={FILTERS_SIDEBAR_RESIZE_CONFIG}
+      >
         <FilterTabs />
       </Sidebar>
     </Form>
@@ -246,42 +257,36 @@ function PromptEntry({
         <Button
           className="shrink-0"
           variant="secondary"
+          size="icon"
           type="button"
+          title="Copy to clipboard"
           onClick={handleOnCopy}
         >
-          <Clipboard className="mr-2" />
-          Copy
+          <Clipboard />
         </Button>
         <Button
           className="shrink-0"
           variant="secondary"
+          size="icon"
           type="button"
+          title="Edit prompt"
           onClick={() => onEditPrompt(data)}
         >
-          <Edit2 className="mr-2" />
-          Edit
+          <Edit2 />
         </Button>
         <Button
           className="shrink-0"
           variant="secondary"
+          size="icon"
           type="button"
+          title="Pin prompt"
           onClick={() =>
             isSavedPrompt
               ? onUnpinPrompt(data as SavedPrompt)
               : onSavePrompt(data)
           }
         >
-          {isSavedPrompt ? (
-            <>
-              <PinOff className="mr-2" />
-              Unpin
-            </>
-          ) : (
-            <>
-              <Pin className="mr-2" />
-              Pin
-            </>
-          )}
+          {isSavedPrompt ? <PinOff /> : <Pin />}
         </Button>
       </div>
       <div ref={promptContentRef}>

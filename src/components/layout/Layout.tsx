@@ -10,6 +10,8 @@ import { ThemeToggle } from "../ThemeToggle";
 
 import { Navbar } from "./Navbar";
 
+export const NAVBAR_PORTAL_START_ID = "navbar-portal-start";
+
 export function Layout() {
   const params = useParams();
 
@@ -28,9 +30,10 @@ export function Layout() {
   return (
     <>
       <Navbar>
-        <div className="flex w-full items-center justify-between gap-2">
-          <Link to={Routes.Root}>
-            <p className="text-xl font-bold">{pageTitle}</p>
+        <div className="flex w-full items-center gap-2">
+          <div id={NAVBAR_PORTAL_START_ID} />
+          <Link to={Routes.Root} className="mr-auto line-clamp-2 leading-tight">
+            <p className="text-sm font-bold sm:text-xl">{pageTitle}</p>
           </Link>
           <ThemeToggle />
         </div>

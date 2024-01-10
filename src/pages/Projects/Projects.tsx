@@ -3,29 +3,90 @@ import {
   generatePath,
   NavLink,
   Outlet,
+  useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, List, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
 
+import { NAVBAR_PORTAL_START_ID, Portal } from "@/components";
 import { Form, FormInput } from "@/components/form";
-import { Button } from "@/components/ui";
+import {
+  Button,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui";
 import { useLocalStorage } from "@/hooks";
 import { DB } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { Routes } from "@/routes";
 import { Project } from "@/types/projects";
 
-import { Sidebar } from "./components";
+import { ResizeDirection, Sidebar } from "./components";
+
+const PROJECTS_SIDEBAR_RESIZE_CONFIG = {
+  minWidth: 300,
+  maxWidth: 500,
+  direction: ResizeDirection.LeftToRight,
+  storageKey: DB.KEYS.PROJECTS_SIDEBAR_WIDTH,
+};
 
 export function Projects() {
   return (
     <div className="flex items-start gap-2">
-      <ProjectsList />
+      <ProjectListWrapper />
       <Outlet />
     </div>
+  );
+}
+
+function ProjectListWrapper() {
+  const location = useLocation();
+  const isDesktop = useMediaQuery("(min-width: 1536px)");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDesktop) return;
+    setIsOpen(false);
+  }, [location, isDesktop]);
+
+  if (isDesktop) {
+    return (
+      <Sidebar
+        className="sm:border-r-px sm:border-r-border"
+        resizeOptions={PROJECTS_SIDEBAR_RESIZE_CONFIG}
+      >
+        <ProjectsList />
+      </Sidebar>
+    );
+  }
+
+  return (
+    <Portal id={NAVBAR_PORTAL_START_ID}>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button size="icon" variant="outline">
+            <List />
+          </Button>
+        </SheetTrigger>
+        <SheetContent
+          side="left"
+          className="w-full overflow-auto border-r-0 px-0 pt-4 sm:w-96 sm:border-r"
+        >
+          <SheetHeader>
+            <SheetTitle className="px-2 pb-2 text-left">Projects</SheetTitle>
+          </SheetHeader>
+          <ProjectsList />
+        </SheetContent>
+      </Sheet>
+    </Portal>
   );
 }
 
@@ -89,47 +150,45 @@ function ProjectsList() {
   };
 
   return (
-    <Sidebar className="sm:border-r-px sm:border-r-border">
-      <div className="p-2">
-        <ProjectForm
-          defaultValues={projectForEdit}
-          onFormSubmit={projectForEdit ? updateProject : createProject}
-          onCancel={() => setProjectForEdit(null)}
-        />
-        <div className="grid gap-2 py-2">
-          {getLatestStoredProjects().map((project) => (
-            <NavLink
-              key={project.id}
-              to={generatePath(Routes.Project, { id: project.id })}
-              className={(props) =>
-                cn(
-                  "grid grid-flow-col grid-cols-[1fr_auto_auto] items-start gap-2 rounded border p-2 pl-3 hover:bg-foreground/10",
-                  props.isActive && "border-foreground",
-                )
-              }
+    <div className="p-2">
+      <ProjectForm
+        defaultValues={projectForEdit}
+        onFormSubmit={projectForEdit ? updateProject : createProject}
+        onCancel={() => setProjectForEdit(null)}
+      />
+      <div className="grid gap-2 py-2">
+        {getLatestStoredProjects().map((project) => (
+          <NavLink
+            key={project.id}
+            to={generatePath(Routes.Project, { id: project.id })}
+            className={(props) =>
+              cn(
+                "grid grid-flow-col grid-cols-[1fr_auto_auto] items-start gap-2 rounded border p-2 pl-3 hover:bg-foreground/10 focus-visible:outline-transparent",
+                props.isActive && "border-foreground",
+              )
+            }
+          >
+            {project.projectName}
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => setProjectForEdit(project)}
+              className="shrink-0"
             >
-              {project.projectName}
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => setProjectForEdit(project)}
-                className="shrink-0"
-              >
-                <Edit2 />
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={deleteProject(project)}
-                className="shrink-0"
-              >
-                <Trash2 />
-              </Button>
-            </NavLink>
-          ))}
-        </div>
+              <Edit2 />
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={deleteProject(project)}
+              className="shrink-0"
+            >
+              <Trash2 />
+            </Button>
+          </NavLink>
+        ))}
       </div>
-    </Sidebar>
+    </div>
   );
 }
 
@@ -176,7 +235,7 @@ function ProjectForm({
   return (
     <div className="grid gap-2">
       <Button
-        variant={show ? "destructive" : "outline"}
+        variant={show ? "destructive" : "default"}
         onClick={() => {
           setShow((v) => !v);
           if (show) {

@@ -16,9 +16,8 @@ import { Routes } from "@/routes";
 
 import { Project, Projects } from "./Projects";
 
-// TODO: Add Sheet and filter groups
+// TODO: Add Sheet and filter groups ( Projects DONE )
 // TODO: linkup with OpenAI
-// TODO: Copy to clipboard btn
 
 const router = createBrowserRouter(
   createRoutesFromElements(
