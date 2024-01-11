@@ -136,7 +136,7 @@ export function Sidebar({
         ref={dragHandleRef}
         id={DRAG_HANDLE_ID}
         className={cn(
-          "fixed bottom-0 h-[calc(100vh_-_4rem)] w-2 cursor-ew-resize bg-primary",
+          "fixed bottom-0 h-[calc(100vh_-_4rem)] w-1 cursor-ew-resize bg-primary/75",
           "grid place-content-center transition-opacity delay-300 hover:opacity-100 hover:delay-0",
           !isResizing && "opacity-0",
           isResizing && "opacity-100",
@@ -146,7 +146,7 @@ export function Sidebar({
             "right-[calc(var(--sidebar-width)_-_0.25rem)]",
         )}
       >
-        <GripVertical className="h-10 w-6 rounded-lg bg-primary text-primary-foreground" />
+        <GripVertical className="h-8 w-4 rounded-lg bg-primary text-primary-foreground" />
       </div>
     </Component>
   );

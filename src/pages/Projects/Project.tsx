@@ -7,10 +7,11 @@ import {
   useFormState,
   useWatch,
 } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
   Clipboard,
   Edit2,
+  Filter,
   MessageCircleQuestion,
   Pin,
   PinOff,
@@ -19,7 +20,11 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useCopyToClipboard, useUpdateEffect } from "usehooks-ts";
+import {
+  useCopyToClipboard,
+  useMediaQuery,
+  useUpdateEffect,
+} from "usehooks-ts";
 import { z } from "zod";
 
 import {
@@ -27,7 +32,7 @@ import {
   FilterGroupData,
   FilterGroupFileData,
 } from "@/api/filters";
-import { Container } from "@/components";
+import { Container, Portal } from "@/components";
 import { Form, FormInput } from "@/components/form";
 import {
   Accordion,
@@ -38,6 +43,11 @@ import {
   Checkbox,
   Input,
   RadioGroupItem,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
   Tabs,
   TabsContent,
   TabsList,
@@ -60,6 +70,8 @@ const FILTERS_SIDEBAR_RESIZE_CONFIG = {
   direction: ResizeDirection.RightToLeft,
   storageKey: DB.KEYS.FILTERS_SIDEBAR_WIDTH,
 };
+
+const MOBILE_FILTERS_SIDEBAR_PORTAL_ID = "mobile-filters-sidebar-portal";
 
 const promptSchema = z.object({
   prompt: z.string().max(500).min(1, "Prompt cannot be empty"),
@@ -159,7 +171,7 @@ export function Project() {
     <Form<typeof promptSchema>
       schema={promptSchema}
       onSubmit={onSubmit}
-      className="flex grow items-start gap-2"
+      className="flex grow items-end gap-2 xl:items-start"
       defaultValues={defaultValues}
       formRef={formRef}
       key={params.id}
@@ -178,6 +190,24 @@ export function Project() {
           ))}
         </ChatForm>
       </Container>
+      <FiltersSidebar />
+    </Form>
+  );
+}
+
+function FiltersSidebar() {
+  const location = useLocation();
+  const isDesktop = useMediaQuery("(min-width: 1280px)");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDesktop) return;
+    setIsOpen(false);
+  }, [location, isDesktop]);
+
+  if (isDesktop) {
+    return (
       <Sidebar
         className="sm:border-l-px sm:border-l-border"
         as="aside"
@@ -185,7 +215,30 @@ export function Project() {
       >
         <FilterTabs />
       </Sidebar>
-    </Form>
+    );
+  }
+
+  return (
+    <Portal id={MOBILE_FILTERS_SIDEBAR_PORTAL_ID}>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full xl:hidden"
+          >
+            <Filter className="mr-2" />
+            Filters
+          </Button>
+        </SheetTrigger>
+        <SheetContent className="w-full overflow-auto border-l-0 px-0 pt-4 sm:w-96 sm:border-l">
+          <SheetHeader>
+            <SheetTitle className="px-2 pb-4 text-left">Filters</SheetTitle>
+          </SheetHeader>
+          <FilterTabs />
+        </SheetContent>
+      </Sheet>
+    </Portal>
   );
 }
 
@@ -326,7 +379,7 @@ function PromptEntryFiltersSummary({
                       className="text-muted-foreground"
                     >
                       {v}
-                      {!isLast && ", "}
+                      {!isLast && " • "}
                     </span>
                   );
                 })}
@@ -352,7 +405,7 @@ function ChatForm({
   return (
     <div className="grid min-h-full content-end space-y-4 pt-4">
       {children}
-      <div className="sticky bottom-0 rounded-t border bg-background">
+      <div className="sticky bottom-0 bg-background">
         <AppliedFilters />
         <ChatPrompt onEnterPress={onEnterPress} />
       </div>
@@ -392,8 +445,11 @@ function AppliedFilters() {
 
   return (
     <Accordion type="single" collapsible>
-      <AccordionItem value="applied_filters" className="border-none">
-        <AccordionTrigger className="rounded-t border-b p-2 text-xl focus-visible:outline-transparent">
+      <AccordionItem
+        value="applied_filters"
+        className="overflow-hidden rounded border"
+      >
+        <AccordionTrigger className="p-2 text-xl focus-visible:outline-transparent [&[data-state=open]]:border-b">
           Applied Filters ({getAppliedFiltersCount()})
         </AccordionTrigger>
         <AccordionContent className="max-h-[50vh] min-h-20 space-y-4 overflow-auto p-2">
@@ -462,11 +518,12 @@ function ChatPrompt({ onEnterPress }: { onEnterPress?: () => void }) {
   const { isSubmitting } = useFormState({ control });
 
   return (
-    <div className="grid p-2 sm:grid-cols-[1fr_auto]">
+    <div className="grid grid-cols-2 gap-2 py-2 sm:grid-cols-[1fr_auto] sm:grid-rows-2 xl:grid-rows-1">
       <FormInput.Textarea
         name="prompt"
         placeholder="Proompt here..."
-        className="h-16 min-h-0 resize-none rounded-r-none"
+        formItemClassName="sm:row-span-full col-span-full sm:col-span-1"
+        className="h-24 min-h-0 resize-none xl:h-16"
         onKeyDown={(e) => {
           if (e.key === "Enter" && e.shiftKey) return;
           if (e.key === "Enter") {
@@ -477,13 +534,14 @@ function ChatPrompt({ onEnterPress }: { onEnterPress?: () => void }) {
         }}
       />
       <Button
-        className="h-16 rounded-l-none"
         type="submit"
+        className="h-10 sm:h-12 xl:h-16"
         disabled={isSubmitting}
       >
         <MessageCircleQuestion className="mr-2" />
         Proompt
       </Button>
+      <div id={MOBILE_FILTERS_SIDEBAR_PORTAL_ID} />
     </div>
   );
 }

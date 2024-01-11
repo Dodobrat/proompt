@@ -39,7 +39,7 @@ const PROJECTS_SIDEBAR_RESIZE_CONFIG = {
 
 export function Projects() {
   return (
-    <div className="flex items-start gap-2">
+    <div className="flex items-end gap-2 xl:items-start">
       <ProjectListWrapper />
       <Outlet />
     </div>
