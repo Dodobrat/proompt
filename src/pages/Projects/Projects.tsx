@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import { List } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui";
 import { DB } from "@/lib/db";
 import { getCssVar } from "@/lib/utils";
+import { AppSearchParamKeys } from "@/routes";
 
 import { ProjectsList, ResizeDirection, Sidebar } from "./components";
 
@@ -35,9 +36,17 @@ const PROJECTS_SIDEBAR_RESIZE_CONFIG = {
 
 function ProjectListWrapper() {
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isDesktop = useMediaQuery(getCssVar("--screen-2xl"));
 
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDesktop) return;
+    if (searchParams.has(AppSearchParamKeys.CreateProject)) {
+      setTimeout(() => setIsOpen(true));
+    }
+  }, [searchParams, isDesktop]);
 
   useEffect(() => {
     if (isDesktop) return;
@@ -57,7 +66,20 @@ function ProjectListWrapper() {
 
   return (
     <Portal id={NAVBAR_PORTAL_SLOT_ID}>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <Sheet
+        open={isOpen}
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          if (isDesktop) return;
+          if (open) return;
+          setSearchParams((prev) => {
+            if (prev.has(AppSearchParamKeys.CreateProject)) {
+              prev.delete(AppSearchParamKeys.CreateProject);
+            }
+            return prev;
+          });
+        }}
+      >
         <SheetTrigger asChild>
           <Button size="icon" variant="outline">
             <List />
