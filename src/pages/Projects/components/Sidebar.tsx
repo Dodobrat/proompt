@@ -24,12 +24,7 @@ function pxToNumber(px: string) {
   return parseInt(px.replace("px", ""));
 }
 
-export function Sidebar({
-  children,
-  className,
-  resizeOptions,
-  as: Component = "nav",
-}: {
+type SidebarProps = {
   children?: React.ReactNode;
   className?: string;
   as?: React.ElementType;
@@ -39,7 +34,14 @@ export function Sidebar({
     direction: ResizeDirection;
     storageKey?: string;
   };
-}) {
+};
+
+export function Sidebar({
+  children,
+  className,
+  resizeOptions,
+  as: Component = "nav",
+}: SidebarProps) {
   const dragHandleRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +55,7 @@ export function Sidebar({
   const isResizable = resizeOptions !== undefined;
   const DRAG_HANDLE_ID = `drag-handle-${resizeDir}-${storeKey}`;
 
-  const onPointerDown = () => {
+  const onStartResizing = () => {
     if (!isResizable) return;
 
     setIsResizing(true);
@@ -62,7 +64,7 @@ export function Sidebar({
     document.body.style.userSelect = "none";
   };
 
-  const onPointerMove = (event: PointerEvent | TouchEvent) => {
+  const onResizing = (event: PointerEvent | TouchEvent) => {
     if (!isResizable) return;
     if (!isResizing) return;
 
@@ -90,7 +92,7 @@ export function Sidebar({
     );
   };
 
-  const onPointerUp = () => {
+  const onEndResizing = () => {
     if (!isResizable) return;
     if (!isResizing) return;
 
@@ -107,17 +109,17 @@ export function Sidebar({
     setStoredSidebarWidth(pxToNumber(finalSidebarWidth));
   };
 
-  useEventListener("pointerdown", onPointerDown, dragHandleRef);
-  useEventListener("touchstart", onPointerDown, dragHandleRef, {
+  useEventListener("pointerdown", onStartResizing, dragHandleRef);
+  useEventListener("touchstart", onStartResizing, dragHandleRef, {
     passive: true,
   });
 
-  useEventListener("pointermove", onPointerMove, undefined, { passive: true });
-  useEventListener("touchmove", onPointerMove, undefined, { passive: true });
+  useEventListener("pointermove", onResizing, undefined, { passive: true });
+  useEventListener("touchmove", onResizing, undefined, { passive: true });
 
-  useEventListener("pointerup", onPointerUp);
-  useEventListener("touchend", onPointerUp);
-  useEventListener("touchcancel", onPointerUp);
+  useEventListener("pointerup", onEndResizing);
+  useEventListener("touchend", onEndResizing);
+  useEventListener("touchcancel", onEndResizing);
 
   return (
     <Component

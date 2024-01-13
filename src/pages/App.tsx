@@ -9,25 +9,25 @@ import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import { Container, Layout } from "@/components";
+import { Layout } from "@/components";
 import { Toaster } from "@/components/ui";
 import { ThemeProvider } from "@/context";
-import { Routes } from "@/routes";
+import { AppRoute } from "@/routes";
 
 import { Project, Projects } from "./Projects";
+import { Welcome } from "./Welcome";
 
-// TODO: Add Sheet and filter groups ( Projects DONE )
 // TODO: linkup with OpenAI
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path={Routes.Root} element={<Layout />}>
-      <Route index element={<Navigate replace to={Routes.Projects} />} />
-      <Route path={Routes.Projects} element={<Projects />}>
-        <Route index element={<Container>CLICK A PROJECT</Container>} />
-        <Route path={Routes.Project} element={<Project />} />
+    <Route path={AppRoute.Root} element={<Layout />}>
+      <Route index element={<Navigate replace to={AppRoute.Projects} />} />
+      <Route path={AppRoute.Projects} element={<Projects />}>
+        <Route index element={<Welcome />} />
+        <Route path={AppRoute.Project} element={<Project />} />
       </Route>
-      <Route path="*" element={<Navigate replace to={Routes.Root} />} />
+      <Route path="*" element={<Navigate replace to={AppRoute.Root} />} />
     </Route>,
   ),
 );
@@ -48,8 +48,8 @@ export default function App() {
       <ThemeProvider>
         <RouterProvider router={router} />
         <Toaster />
+        <ReactQueryDevtools initialIsOpen={false} />
       </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

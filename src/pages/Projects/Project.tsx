@@ -60,7 +60,7 @@ import {
   useGetAllGroupedFilters,
 } from "@/hooks/query";
 import { DB } from "@/lib/db";
-import { cn } from "@/lib/utils";
+import { cn, getCssVar } from "@/lib/utils";
 
 import { ResizeDirection, Sidebar } from "./components";
 
@@ -197,7 +197,7 @@ export function Project() {
 
 function FiltersSidebar() {
   const location = useLocation();
-  const isDesktop = useMediaQuery("(min-width: 1280px)");
+  const isDesktop = useMediaQuery(getCssVar("--screen-xl"));
 
   const [isOpen, setIsOpen] = useState(false);
 

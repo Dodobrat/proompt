@@ -4,6 +4,12 @@
 
 @layer base {
   :root {
+    --screen-sm: screen("sm");
+    --screen-md: screen("md");
+    --screen-lg: screen("lg");
+    --screen-xl: screen("xl");
+    --screen-2xl: screen("2xl");
+
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 

@@ -1,16 +1,18 @@
 import { Link, Outlet, useParams } from "react-router-dom";
+import { MessageCircleQuestion } from "lucide-react";
 import { useDocumentTitle } from "usehooks-ts";
 
 import { useLocalStorage } from "@/hooks";
 import { DB } from "@/lib/db";
-import { Routes } from "@/routes";
+import { cn } from "@/lib/utils";
+import { AppRoute } from "@/routes";
 import { Project } from "@/types/projects";
 
 import { ThemeToggle } from "../ThemeToggle";
 
 import { Navbar } from "./Navbar";
 
-export const NAVBAR_PORTAL_START_ID = "navbar-portal-start";
+export const NAVBAR_PORTAL_SLOT_ID = "navbar-portal-start";
 
 export function Layout() {
   const params = useParams();
@@ -23,17 +25,23 @@ export function Layout() {
   const projectName = storedProjects.find((p) => p.id === params.id)
     ?.projectName;
 
-  const pageTitle = `Proompt${projectName ? ` - ${projectName}` : ""}`;
+  const pageTitle = projectName ? ` - ${projectName}` : "";
 
-  useDocumentTitle(pageTitle);
+  useDocumentTitle(`Proompt${pageTitle}`);
 
   return (
     <>
       <Navbar>
         <div className="flex w-full items-center gap-2">
-          <div id={NAVBAR_PORTAL_START_ID} />
-          <Link to={Routes.Root} className="mr-auto line-clamp-2 leading-tight">
-            <p className="text-sm font-bold sm:text-xl">{pageTitle}</p>
+          <div id={NAVBAR_PORTAL_SLOT_ID} />
+          <Link
+            to={AppRoute.Root}
+            className="mr-auto line-clamp-2 leading-tight"
+          >
+            <p className="font-bold sm:text-xl">
+              <Logo />
+              {pageTitle}
+            </p>
           </Link>
           <ThemeToggle />
         </div>
@@ -42,5 +50,15 @@ export function Layout() {
         <Outlet />
       </main>
     </>
+  );
+}
+
+export function Logo({ className }: { className?: string }) {
+  return (
+    <span className={cn("inline-flex items-center", className)}>
+      <span>Pro</span>
+      <MessageCircleQuestion className="h-full w-[0.9em]" />
+      <span>mpt</span>
+    </span>
   );
 }
