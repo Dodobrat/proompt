@@ -30,7 +30,7 @@ export function Welcome() {
         This is a prompt management tool that uses OpenAI's ChatGPT to help you
         write meaningful prompts for image generation.
       </p>
-      <div className="mx-auto inline-flex items-center gap-2">
+      <div className="mx-auto inline-flex flex-col items-center gap-2 sm:flex-row">
         <Button
           className="w-min"
           onClick={() =>
