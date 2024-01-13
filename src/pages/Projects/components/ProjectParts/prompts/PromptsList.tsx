@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 
 import { useLocalStorage } from "@/hooks";
+import { useRefinePrompt } from "@/hooks/query";
 import { DB } from "@/lib/db";
 import {
   PromptSchema,
@@ -19,6 +20,8 @@ export function PromptsList({
   setTemporaryPrompts,
 }: PromptsListProps) {
   const params = useParams();
+
+  const { mutate: refinePrompt } = useRefinePrompt();
 
   const { setValue: setStoredProjectPrompts } = useLocalStorage<PromptSchema[]>(
     DB.KEYS.PROJECT_KEY_PROMPTS(params.id!),
@@ -66,7 +69,7 @@ export function PromptsList({
           data={prompt}
           onPinPrompt={handleOnPinPrompt}
           onUnpinPrompt={handleOnUnpinPrompt}
-          //   onRefinePrompt={console.log}
+          onRefinePrompt={refinePrompt}
         />
       ))}
     </>

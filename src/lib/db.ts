@@ -7,6 +7,7 @@ const DB_KEYS = {
   THEME: "@proompt/theme",
   FILTERS_SIDEBAR_WIDTH: "@proompt/filters-sidebar-width",
   PROJECTS_SIDEBAR_WIDTH: "@proompt/projects-sidebar-width",
+  SESSION_API_KEY: "@proompt/session-api-key",
 };
 
 export const DB = {

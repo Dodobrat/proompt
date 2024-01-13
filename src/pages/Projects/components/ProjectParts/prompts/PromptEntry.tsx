@@ -27,7 +27,7 @@ type PromptEntryProps = {
   data: PromptSchema;
   onPinPrompt?: (prompt: PromptSchema) => void;
   onUnpinPrompt?: (prompt: SavedPrompt) => void;
-  onRefinePrompt?: (prompt: PromptSchema | SavedPrompt) => void;
+  onRefinePrompt?: (prompt: string) => void;
 };
 
 export function PromptEntry({
@@ -55,7 +55,7 @@ export function PromptEntry({
     ? dateFormatter.format(new Date(Number((data as SavedPrompt).id)))
     : "Temporary Prompt";
 
-  const handleOnCopy = () => {
+  const convertPromptToText = () => {
     const textDiv = promptContentRef.current;
 
     if (!textDiv) return;
@@ -71,8 +71,9 @@ export function PromptEntry({
 
     const selectedText = selection.toString();
 
-    copyFn(selectedText);
     selection.removeAllRanges();
+
+    return selectedText;
   };
 
   return (
@@ -86,7 +87,14 @@ export function PromptEntry({
             className="shrink-0"
             variant="outline"
             type="button"
-            onClick={() => onRefinePrompt?.(data)}
+            onClick={() => {
+              const selectedText = convertPromptToText();
+              if (!selectedText) {
+                toast.error("Couldn't get prompt data");
+                return;
+              }
+              onRefinePrompt?.(selectedText);
+            }}
           >
             <Wand2 className="mr-2" />
             Refine with AI
@@ -98,7 +106,14 @@ export function PromptEntry({
           size="icon"
           type="button"
           title="Copy to clipboard"
-          onClick={handleOnCopy}
+          onClick={() => {
+            const selectedText = convertPromptToText();
+            if (!selectedText) {
+              toast.error("Couldn't copy to clipboard");
+              return;
+            }
+            copyFn(selectedText);
+          }}
         >
           <Clipboard />
         </Button>
@@ -120,7 +135,7 @@ export function PromptEntry({
         )}
       </div>
       <div ref={promptContentRef}>
-        <p className="">{data.prompt}</p>
+        <p>{data.prompt}</p>
         {hasAppliedFilters && <PromptEntryFiltersSummary data={data} />}
       </div>
     </article>
