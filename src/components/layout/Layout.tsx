@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { MessageCircleQuestion, Settings } from "lucide-react";
 import { toast } from "sonner";
@@ -93,10 +94,39 @@ function ApiKeyForm() {
             label="OpenAI API KEY"
             hint="Once you close the tab, the key will be forgotten for security"
           />
-          <Button className="w-max">Save for session</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button className="grow">Save for session</Button>
+            <RemoveApiKeyButton />
+          </div>
         </Form>
       </PopoverContent>
     </Popover>
+  );
+}
+
+function RemoveApiKeyButton() {
+  const { setValue } = useFormContext();
+
+  const [sessionApiKey, setSessionApiKey] = useSessionStorage(
+    DB.KEYS.SESSION_API_KEY,
+    null,
+  );
+
+  if (!sessionApiKey) return null;
+
+  return (
+    <Button
+      variant="destructive"
+      className="grow"
+      type="button"
+      onClick={() => {
+        setValue("apiKey", "");
+        setSessionApiKey(null);
+        toast.success("API Key removed from current session");
+      }}
+    >
+      Remove from session
+    </Button>
   );
 }
 

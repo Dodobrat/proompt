@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Clipboard, Pin, PinOff, Wand2 } from "lucide-react";
 import { toast } from "sonner";
-import { useCopyToClipboard } from "usehooks-ts";
+import { useCopyToClipboard, useSessionStorage } from "usehooks-ts";
 
 import { Button } from "@/components/ui";
+import { DB } from "@/lib/db";
 import {
   PromptSchema,
   SavedPrompt,
@@ -36,6 +37,9 @@ export function PromptEntry({
   onUnpinPrompt,
   onRefinePrompt,
 }: PromptEntryProps) {
+  const [sessionApiKey] = useSessionStorage(DB.KEYS.SESSION_API_KEY, null);
+  const hasSessionApiKey = Boolean(sessionApiKey);
+
   const [copiedValue, copyFn] = useCopyToClipboard();
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export function PromptEntry({
         <p className="w-full grow text-xl font-medium sm:w-auto">
           {promptTitle}
         </p>
-        {Boolean(onRefinePrompt) && (
+        {hasSessionApiKey && Boolean(onRefinePrompt) && (
           <Button
             className="shrink-0"
             variant="outline"
