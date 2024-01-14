@@ -71,7 +71,7 @@ function ApiKeyForm() {
   return (
     <Popover open={apiKeyFormOpen} onOpenChange={setApiKeyFormOpen}>
       <PopoverTrigger asChild>
-        <Button size="icon">
+        <Button size="icon" title="Open Api Key form">
           <Settings />
         </Button>
       </PopoverTrigger>

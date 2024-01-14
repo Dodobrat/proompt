@@ -81,7 +81,7 @@ function ProjectListWrapper() {
         }}
       >
         <SheetTrigger asChild>
-          <Button size="icon" variant="outline">
+          <Button size="icon" variant="outline" title="Open Projects list">
             <List />
           </Button>
         </SheetTrigger>
