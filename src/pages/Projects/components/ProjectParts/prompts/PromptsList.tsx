@@ -57,6 +57,16 @@ export function PromptsList({
     }
   }, [isPending]);
 
+  useEffect(() => {
+    // Using setTimeout to ensure the prompts are rendered before scrolling
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    });
+  }, [params]);
+
   const { setValue: setStoredProjectPrompts } = useLocalStorage<PromptSchema[]>(
     DB.KEYS.PROJECT_KEY_PROMPTS(params.id!),
     [],
