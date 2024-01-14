@@ -107,7 +107,7 @@ export function PromptEntry({
       ref={entryRef}
     >
       {isAIPrompt && (
-        <span className="absolute -top-2.5 left-2 rounded-full bg-foreground px-2 py-0.5 leading-none text-background ">
+        <span className="absolute -top-2.5 left-2 rounded-full bg-foreground px-2 py-0.5 font-mono text-sm leading-tight text-background">
           AI
         </span>
       )}
