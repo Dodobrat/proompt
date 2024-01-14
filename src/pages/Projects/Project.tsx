@@ -131,7 +131,7 @@ function ChatPrompt({ children, onEnterPress }: ChatPromptProps) {
     if (scrollResetterRef.current) {
       scrollResetterRef.current.scrollIntoView({
         behavior: "smooth",
-        block: "nearest",
+        block: "start",
       });
     }
   }, [submitCount]);

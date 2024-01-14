@@ -29,6 +29,7 @@ type PromptEntryProps = {
   onPinPrompt: (prompt: PromptSchema) => void;
   onUnpinPrompt: (prompt: PromptSchema) => void;
   onRefinePrompt: (prompt: string) => void;
+  entryRef?: React.Ref<HTMLElement>;
 };
 
 const convertPromptToText = (el: HTMLDivElement | null) => {
@@ -55,6 +56,7 @@ export function PromptEntry({
   onPinPrompt,
   onUnpinPrompt,
   onRefinePrompt,
+  entryRef,
 }: PromptEntryProps) {
   const promptContentRef = useRef<HTMLDivElement>(null);
 
@@ -99,7 +101,11 @@ export function PromptEntry({
   };
 
   return (
-    <article className="relative rounded border p-2">
+    <article
+      className="relative rounded border p-2"
+      id={data.id}
+      ref={entryRef}
+    >
       {isAIPrompt && (
         <span className="absolute -top-2.5 left-2 rounded-full bg-foreground px-2 py-0.5 leading-none text-background ">
           AI

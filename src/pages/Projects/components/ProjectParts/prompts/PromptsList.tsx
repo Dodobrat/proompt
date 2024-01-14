@@ -1,9 +1,13 @@
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useUpdateEffect } from "usehooks-ts";
 
 import { useLocalStorage } from "@/hooks";
 import { useRefinePrompt } from "@/hooks/query";
 import { DB } from "@/lib/db";
+import { cn } from "@/lib/utils";
 import {
   PromptSchema,
   PromptType,
@@ -22,7 +26,36 @@ export function PromptsList({
 }: PromptsListProps) {
   const params = useParams();
 
-  const { mutateAsync: refinePromptAsync, isPending } = useRefinePrompt();
+  const pendingRefinementRef = useRef<HTMLDivElement>(null);
+  const lastRefinedPromptIdRef = useRef<string | null>(null);
+  const promptsRef = useRef<Record<string, HTMLElement>>({});
+
+  const { mutateAsync: refinePromptAsync, isPending } = useRefinePrompt({
+    onSuccess: () => {
+      toast.success("Prompt refined successfully!");
+    },
+  });
+
+  useUpdateEffect(() => {
+    if (!lastRefinedPromptIdRef.current) return;
+
+    const promptRef = promptsRef.current[lastRefinedPromptIdRef.current];
+    if (!promptRef) return;
+
+    promptRef.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [temporaryPrompts]);
+
+  useEffect(() => {
+    if (isPending && pendingRefinementRef.current) {
+      pendingRefinementRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [isPending]);
 
   const { setValue: setStoredProjectPrompts } = useLocalStorage<PromptSchema[]>(
     DB.KEYS.PROJECT_KEY_PROMPTS(params.id!),
@@ -84,6 +117,8 @@ export function PromptsList({
       type: PromptType.AI,
     };
 
+    lastRefinedPromptIdRef.current = refinedPromptEntry.id!;
+
     setTemporaryPrompts((prev) => [...prev, refinedPromptEntry]);
   };
 
@@ -96,14 +131,25 @@ export function PromptsList({
           onPinPrompt={handleOnPinPrompt}
           onUnpinPrompt={handleOnUnpinPrompt}
           onRefinePrompt={handleOnRefinePrompt}
+          entryRef={(el) => {
+            if (!el) return;
+            promptsRef.current = {
+              ...promptsRef.current,
+              [el.id]: el,
+            };
+          }}
         />
       ))}
-      {isPending && (
-        <div className="flex animate-pulse items-center gap-2 rounded border p-2">
-          <Loader2 className="animate-spin" />
-          Refining prompt...
-        </div>
-      )}
+      <div
+        className={cn(
+          "animate-pulse items-center gap-2 rounded border p-2",
+          isPending ? "flex" : "hidden",
+        )}
+        ref={pendingRefinementRef}
+      >
+        <Loader2 className="animate-spin" />
+        Refining prompt...
+      </div>
     </>
   );
 }

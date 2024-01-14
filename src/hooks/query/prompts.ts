@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { DB } from "@/lib/db";
 
-export function useRefinePrompt() {
+export function useRefinePrompt(config: { onSuccess?: () => void }) {
   const [sessionApiKey] = useSessionStorage(DB.KEYS.SESSION_API_KEY, null);
 
   return useMutation({
@@ -40,6 +40,9 @@ export function useRefinePrompt() {
       const response = unsanitizedResponse.replace(/^"|"$/g, "");
 
       return response;
+    },
+    onSuccess: () => {
+      config.onSuccess?.();
     },
   });
 }
