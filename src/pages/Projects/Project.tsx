@@ -166,7 +166,7 @@ function ChatPrompt({ children, onEnterPress }: ChatPromptProps) {
           <div id={MOBILE_FILTERS_SIDEBAR_PORTAL_ID} />
         </div>
       </div>
-      <div ref={scrollResetterRef} />
+      <div ref={scrollResetterRef} className="!my-0" />
     </div>
   );
 }
