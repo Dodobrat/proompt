@@ -1,17 +1,10 @@
 import { useGetAllFilterGroups } from "@/hooks/query";
-import {
-  PromptSchema,
-  SavedPrompt,
-} from "@/pages/Projects/schemas/promptSchema";
+import { PromptSchema } from "@/pages/Projects/schemas/promptSchema";
 
-type PromptEntryFiltersSummaryProps = {
-  data: PromptSchema | SavedPrompt;
-};
-
-export function PromptEntryFiltersSummary({
-  data,
-}: PromptEntryFiltersSummaryProps) {
+export function PromptEntryFiltersSummary({ data }: { data: PromptSchema }) {
   const { data: filterGroups } = useGetAllFilterGroups();
+
+  if (!data.filters) return null;
 
   return (
     <div className="pt-2">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -13,6 +13,8 @@ import { ProjectItem } from "./ProjectListItem";
 export function ProjectsList() {
   const navigate = useNavigate();
   const params = useParams();
+
+  const isDeletingRef = useRef(false);
 
   const [projectForEdit, setProjectForEdit] = useState<Project | null>(null);
   const {
@@ -29,9 +31,10 @@ export function ProjectsList() {
     );
 
     if (!projectExists) {
-      navigate(generatePath(AppRoute.Projects), {
-        state: { missingProjectId: params.id },
-      });
+      navigate(
+        generatePath(AppRoute.Projects),
+        isDeletingRef.current ? {} : { state: { missingProjectId: params.id } },
+      );
     }
   }, [getLatestStoredProjects, navigate, params.id]);
 
@@ -41,6 +44,7 @@ export function ProjectsList() {
       return prev.filter((p) => p.id !== project.id);
     });
     removeValue(DB.KEYS.PROJECT_KEY_FILTERS(project.id));
+    isDeletingRef.current = true;
   };
 
   const createProject = (project: Project) => {

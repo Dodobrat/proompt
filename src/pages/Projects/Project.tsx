@@ -18,7 +18,7 @@ import { useLocalStorage } from "@/hooks";
 import { DB } from "@/lib/db";
 import { getCssVar } from "@/lib/utils";
 
-import { PromptSchema, promptSchema } from "./schemas/promptSchema";
+import { PromptSchema, promptSchema, PromptType } from "./schemas/promptSchema";
 import {
   AppliedFilters,
   FilterTabs,
@@ -67,8 +67,17 @@ export function Project() {
 
   const onSubmit = (data: PromptSchema) => {
     setStoredProjectFilters(data);
-    setTemporaryPrompts((prev) => [...prev, structuredClone(data)]);
-    // SEND DATA TO API
+
+    const promptTimestamp = new Date().getTime();
+
+    const promptData = {
+      ...structuredClone(data),
+      id: promptTimestamp.toString(),
+      timestamp: promptTimestamp,
+      type: PromptType.Temporary,
+    };
+
+    setTemporaryPrompts((prev) => [...prev, promptData]);
   };
 
   const handleOnEnterPress = () => {
@@ -114,7 +123,18 @@ type ChatPromptProps = {
 
 function ChatPrompt({ children, onEnterPress }: ChatPromptProps) {
   const { control } = useFormContext();
-  const { isSubmitting } = useFormState({ control });
+  const { isSubmitting, submitCount } = useFormState({ control });
+
+  const scrollResetterRef = useRef<HTMLDivElement>(null);
+
+  useUpdateEffect(() => {
+    if (scrollResetterRef.current) {
+      scrollResetterRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [submitCount]);
 
   return (
     <div className="grid min-h-full content-end space-y-4 pt-4">
@@ -146,6 +166,7 @@ function ChatPrompt({ children, onEnterPress }: ChatPromptProps) {
           <div id={MOBILE_FILTERS_SIDEBAR_PORTAL_ID} />
         </div>
       </div>
+      <div ref={scrollResetterRef} />
     </div>
   );
 }

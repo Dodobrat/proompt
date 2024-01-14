@@ -7,7 +7,7 @@ import { Button } from "@/components/ui";
 import { DB } from "@/lib/db";
 import {
   PromptSchema,
-  SavedPrompt,
+  PromptType,
 } from "@/pages/Projects/schemas/promptSchema";
 
 import { PromptEntryFiltersSummary } from "./PromptEntryFiltersSummary";
@@ -26,9 +26,28 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, dateFormatOptions);
 
 type PromptEntryProps = {
   data: PromptSchema;
-  onPinPrompt?: (prompt: PromptSchema) => void;
-  onUnpinPrompt?: (prompt: SavedPrompt) => void;
-  onRefinePrompt?: (prompt: string) => void;
+  onPinPrompt: (prompt: PromptSchema) => void;
+  onUnpinPrompt: (prompt: PromptSchema) => void;
+  onRefinePrompt: (prompt: string) => void;
+};
+
+const convertPromptToText = (el: HTMLDivElement | null) => {
+  if (!el) return;
+
+  const range = document.createRange();
+  range.selectNodeContents(el);
+
+  const selection = window.getSelection();
+  if (!selection) return;
+
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  const selectedText = selection.toString();
+
+  selection.removeAllRanges();
+
+  return selectedText;
 };
 
 export function PromptEntry({
@@ -37,68 +56,74 @@ export function PromptEntry({
   onUnpinPrompt,
   onRefinePrompt,
 }: PromptEntryProps) {
+  const promptContentRef = useRef<HTMLDivElement>(null);
+
   const [sessionApiKey] = useSessionStorage(DB.KEYS.SESSION_API_KEY, null);
   const hasSessionApiKey = Boolean(sessionApiKey);
+
+  const isRefinedPrompt = data.type === PromptType.AI;
+  const isPinnedRefinedPrompt = data.type === PromptType.AIPinned;
+  const isPinnedPrompt = data.type === PromptType.Pinned;
+  const isTemporaryPrompt = data.type === PromptType.Temporary;
+
+  const isPinned = isPinnedPrompt || isPinnedRefinedPrompt;
+  const isAIPrompt = isRefinedPrompt || isPinnedRefinedPrompt;
+  const showRefinePromptButton = !isAIPrompt && hasSessionApiKey;
+
+  const hasAppliedFilters =
+    typeof data.filters === "object" &&
+    Object.values(data.filters).some((v) => (Array.isArray(v) ? v.length : v));
 
   const [copiedValue, copyFn] = useCopyToClipboard();
 
   useEffect(() => {
     if (!copiedValue) return;
     toast.success("Copied to clipboard");
-    setTimeout(() => copyFn(""), 5000);
   }, [copiedValue, copyFn]);
-  const promptContentRef = useRef<HTMLDivElement>(null);
 
-  const hasAppliedFilters = Object.values(data.filters).some((v) =>
-    Array.isArray(v) ? v.length : v,
-  );
+  const handleOnRefinePrompt = () => {
+    const selectedText = convertPromptToText(promptContentRef.current);
+    if (!selectedText) return toast.error("Couldn't get prompt data");
+    onRefinePrompt?.(selectedText);
+  };
 
-  const isSavedPrompt = Boolean((data as SavedPrompt)?.id);
+  const handleOnCopy = () => {
+    const selectedText = convertPromptToText(promptContentRef.current);
+    if (!selectedText) return toast.error("Couldn't copy to clipboard");
+    copyFn(selectedText);
+  };
 
-  const promptTitle = isSavedPrompt
-    ? dateFormatter.format(new Date(Number((data as SavedPrompt).id)))
-    : "Temporary Prompt";
-
-  const convertPromptToText = () => {
-    const textDiv = promptContentRef.current;
-
-    if (!textDiv) return;
-
-    const range = document.createRange();
-    range.selectNodeContents(textDiv);
-
-    const selection = window.getSelection();
-    if (!selection) return;
-
-    selection.removeAllRanges();
-    selection.addRange(range);
-
-    const selectedText = selection.toString();
-
-    selection.removeAllRanges();
-
-    return selectedText;
+  const handleOnPinUnpinPrompt = () => {
+    if (isPinned) return onUnpinPrompt?.(data);
+    return onPinPrompt?.(data);
   };
 
   return (
-    <article className="rounded border p-2">
+    <article className="relative rounded border p-2">
+      {isAIPrompt && (
+        <span className="absolute -top-2.5 left-2 rounded-full bg-foreground px-2 py-0.5 leading-none text-background ">
+          AI
+        </span>
+      )}
       <div className="flex flex-wrap items-start gap-2 pb-2">
         <p className="w-full grow text-xl font-medium sm:w-auto">
-          {promptTitle}
+          {isTemporaryPrompt && "Temporary Prompt"}
+          {isPinnedPrompt && "Pinned Prompt"}
+          {isRefinedPrompt && "AI Refined Prompt"}
+          {isPinnedRefinedPrompt && "Pinned AI Refined Prompt"}
+
+          {Boolean(data.timestamp) && typeof data.timestamp === "number" && (
+            <span className="block text-sm text-muted-foreground">
+              {dateFormatter.format(new Date(data.timestamp))}
+            </span>
+          )}
         </p>
-        {hasSessionApiKey && Boolean(onRefinePrompt) && (
+        {showRefinePromptButton && (
           <Button
             className="shrink-0"
             variant="outline"
             type="button"
-            onClick={() => {
-              const selectedText = convertPromptToText();
-              if (!selectedText) {
-                toast.error("Couldn't get prompt data");
-                return;
-              }
-              onRefinePrompt?.(selectedText);
-            }}
+            onClick={handleOnRefinePrompt}
           >
             <Wand2 className="mr-2" />
             Refine with AI
@@ -110,37 +135,27 @@ export function PromptEntry({
           size="icon"
           type="button"
           title="Copy to clipboard"
-          onClick={() => {
-            const selectedText = convertPromptToText();
-            if (!selectedText) {
-              toast.error("Couldn't copy to clipboard");
-              return;
-            }
-            copyFn(selectedText);
-          }}
+          onClick={handleOnCopy}
         >
           <Clipboard />
         </Button>
-        {Boolean(onPinPrompt) && Boolean(onUnpinPrompt) && (
-          <Button
-            className="shrink-0"
-            variant="secondary"
-            size="icon"
-            type="button"
-            title="Pin prompt"
-            onClick={() =>
-              isSavedPrompt
-                ? onUnpinPrompt?.(data as SavedPrompt)
-                : onPinPrompt?.(data)
-            }
-          >
-            {isSavedPrompt ? <PinOff /> : <Pin />}
-          </Button>
-        )}
+        <Button
+          className="shrink-0"
+          variant="secondary"
+          size="icon"
+          type="button"
+          title="Pin prompt"
+          onClick={handleOnPinUnpinPrompt}
+        >
+          {isPinned ? <PinOff /> : <Pin />}
+        </Button>
       </div>
       <div ref={promptContentRef}>
-        <p>{data.prompt}</p>
-        {hasAppliedFilters && <PromptEntryFiltersSummary data={data} />}
+        {isAIPrompt && <p>{data.refinements}</p>}
+        {!isAIPrompt && <p>{data.prompt}</p>}
+        {!isAIPrompt && hasAppliedFilters && (
+          <PromptEntryFiltersSummary data={data} />
+        )}
       </div>
     </article>
   );

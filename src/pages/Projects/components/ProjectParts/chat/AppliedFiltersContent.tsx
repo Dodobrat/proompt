@@ -10,6 +10,8 @@ export function AppliedFiltersContent() {
   const { control, setValue } = useFormContext();
   const watchedFilters = useWatch({ control, name: "filters" });
 
+  if (typeof watchedFilters !== "object") return null;
+
   return Object.entries(watchedFilters).map(([key, value]) => {
     if (!value) return null;
     if (Array.isArray(value) && !value.length) return null;

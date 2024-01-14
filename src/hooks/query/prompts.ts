@@ -8,7 +8,7 @@ export function useRefinePrompt() {
   const [sessionApiKey] = useSessionStorage(DB.KEYS.SESSION_API_KEY, null);
 
   return useMutation({
-    mutationFn: (prompt: string) => {
+    mutationFn: async (prompt: string) => {
       if (!sessionApiKey) {
         throw new Error("OpenAI key not found");
       }
@@ -16,10 +16,10 @@ export function useRefinePrompt() {
       const openai = new OpenAI({
         apiKey: sessionApiKey,
         dangerouslyAllowBrowser: true,
+        maxRetries: 1,
       });
 
-      return openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+      const chatCompletion = await openai.chat.completions.create({
         messages: [
           {
             role: "system",
@@ -28,7 +28,18 @@ export function useRefinePrompt() {
           },
           { role: "user", content: prompt },
         ],
+        model: "gpt-4",
       });
+
+      const unsanitizedResponse = chatCompletion.choices?.[0]?.message?.content;
+
+      if (!unsanitizedResponse) {
+        throw new Error("No response from OpenAI");
+      }
+
+      const response = unsanitizedResponse.replace(/^"|"$/g, "");
+
+      return response;
     },
   });
 }
