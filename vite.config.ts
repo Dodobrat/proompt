@@ -51,10 +51,17 @@ const pwaConfig: Partial<VitePWAOptions> = {
     screenshots: [
       {
         src: "/screenshot_welcome.png",
-        sizes: "2714x1550",
+        sizes: "1280x720",
         type: "image/png",
         form_factor: "wide",
         label: "Welcome screen",
+      },
+      {
+        src: "/screenshot_project.png",
+        sizes: "1280x720",
+        type: "image/png",
+        form_factor: "wide",
+        label: "Project screen",
       },
       {
         src: "/screenshot_welcome_m.png",

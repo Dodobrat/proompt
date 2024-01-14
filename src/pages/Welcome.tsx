@@ -39,7 +39,7 @@ export function Welcome() {
           </ol>
           <strong>and</strong>
           <ol className="grid list-inside list-decimal gap-2 rounded border bg-muted p-2 text-left marker:font-bold">
-            <li>Add an api key from OpenAI</li>
+            <li>Add an API key from OpenAI</li>
             <li>Refine prompts using AI</li>
             <li>Pin or copy your prompts</li>
           </ol>
