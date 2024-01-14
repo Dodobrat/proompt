@@ -15,6 +15,7 @@ const pwaConfig: Partial<VitePWAOptions> = {
     "favicon.ico",
     "logo.svg",
     "maskable_icon.png",
+    "/data/*.json",
   ],
   workbox: {
     globPatterns: ["**/*.{js,css,html,ico,png,svg,json}"],
@@ -91,6 +92,7 @@ const pwaConfig: Partial<VitePWAOptions> = {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), VitePWA(pwaConfig)],
+  publicDir: "public",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
